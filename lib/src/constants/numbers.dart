@@ -2,7 +2,8 @@ import 'package:flutter/material.dart' show FontWeight;
 
 // layout
 const defaultPadding = 12.0;
-const buttonBorderRadius = 12.0;
+const buttonBorderRadius = 15.0;
+const inputBorderRadius = 25.0;
 
 //styles
 const smallFont = 10.0;

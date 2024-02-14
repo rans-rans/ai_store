@@ -1,15 +1,10 @@
-import 'package:flutter/material.dart'
-    show Scaffold, Colors, Icons, ElevatedButton, TextButton;
+import 'package:ai_store/src/widgets/wide_button_widget.dart';
+import 'package:flutter/material.dart' show Scaffold, Colors, Icons, TextButton;
 import 'package:flutter/widgets.dart';
 
 import '../../../constants/colors.dart' show primaryColor;
 import '../../../constants/numbers.dart'
-    show
-        buttonBorderRadius,
-        defaultPadding,
-        largeFontSize,
-        mediumFontSize,
-        mediumFontWeight;
+    show defaultPadding, largeFontSize, mediumFontSize, mediumFontWeight;
 import '../../../constants/strings.dart' show onboardingBackgroundImage;
 
 class OnboardingScreen extends StatelessWidget {
@@ -104,19 +99,10 @@ class OnboardingScreen extends StatelessWidget {
                       ])
                     ],
                   ),
-                  ElevatedButton(
+                  WideButtonWidget(
+                    text: "SIGN UP",
                     onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(buttonBorderRadius),
-                      ),
-                    ),
-                    child: const Text(
-                      "SIGN UP",
-                      style: TextStyle(fontSize: mediumFontSize),
-                    ),
+                    color: Colors.black,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
