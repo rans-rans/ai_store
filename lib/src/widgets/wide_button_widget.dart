@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../constants/colors.dart' show primaryColor;
 import '../constants/numbers.dart' show buttonBorderRadius, mediumFontSize;
 
 class WideButtonWidget extends StatelessWidget {
@@ -19,7 +18,7 @@ class WideButtonWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         minimumSize: const Size(double.infinity, 40),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(buttonBorderRadius),

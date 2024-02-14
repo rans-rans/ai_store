@@ -1,8 +1,8 @@
 import 'package:ai_store/src/widgets/wide_button_widget.dart';
-import 'package:flutter/material.dart' show Scaffold, Colors, Icons, TextButton;
+import 'package:flutter/material.dart'
+    show Colors, Icons, Scaffold, TextButton, Theme;
 import 'package:flutter/widgets.dart';
 
-import '../../../constants/colors.dart' show primaryColor;
 import '../../../constants/numbers.dart'
     show defaultPadding, largeFontSize, mediumFontSize, mediumFontWeight;
 import '../../../constants/strings.dart' show onboardingBackgroundImage;
@@ -57,13 +57,13 @@ class OnboardingScreen extends StatelessWidget {
                       1: FractionColumnWidth(0.75),
                       2: FractionColumnWidth(0.25),
                     },
-                    children: const [
+                    children: [
                       TableRow(children: [
                         Icon(
                           Icons.check,
-                          color: primaryColor,
+                          color: Theme.of(context).primaryColor,
                         ),
-                        Text(
+                        const Text(
                           "Over 300K products",
                           style: TextStyle(
                               color: Colors.black,
@@ -74,9 +74,9 @@ class OnboardingScreen extends StatelessWidget {
                       TableRow(children: [
                         Icon(
                           Icons.check,
-                          color: primaryColor,
+                          color: Theme.of(context).primaryColor,
                         ),
-                        Text(
+                        const Text(
                           "Quality guranteed",
                           style: TextStyle(
                               color: Colors.black,
@@ -87,9 +87,9 @@ class OnboardingScreen extends StatelessWidget {
                       TableRow(children: [
                         Icon(
                           Icons.check,
-                          color: primaryColor,
+                          color: Theme.of(context).primaryColor,
                         ),
-                        Text(
+                        const Text(
                           "Purchase security",
                           style: TextStyle(
                               color: Colors.black,
@@ -116,9 +116,9 @@ class OnboardingScreen extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {},
-                        child: const Text(
+                        child: Text(
                           "Login",
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../constants/colors.dart' show primaryColor;
 import '../../../../constants/numbers.dart'
     show boldestFontWeight, buttonBorderRadius, inputBorderRadius, largeFontSize;
 import '../../../../constants/strings.dart' show googleLogoImage;
@@ -111,9 +110,9 @@ class _AuthScreenState extends State<AuthScreen> {
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(buttonBorderRadius),
-                  side: const BorderSide(
+                  side: BorderSide(
                     width: 2,
-                    color: primaryColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ),
