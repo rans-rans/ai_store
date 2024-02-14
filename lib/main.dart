@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'src/features/products/presentation/screens/home_screen.dart';
+import 'src/features/onboarding/presentation/onboarding_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,8 +11,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeScreen(),
+    return MaterialApp(
+      home: const OnboardingScreen(),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(foregroundColor: Colors.black),
+        ),
+      ),
     );
   }
 }
