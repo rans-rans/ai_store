@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart'
     show
         AppBarTheme,
+        CardTheme,
         Color,
         Colors,
         ElevatedButton,
@@ -22,9 +23,16 @@ final lightTheme = ThemeData.light().copyWith(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(foregroundColor: Colors.black),
   ),
+  cardTheme: const CardTheme(
+    surfaceTintColor: Colors.white,
+    // color: Colors.white,
+  ),
 );
 final darkTheme = ThemeData.dark().copyWith(
   primaryColor: primaryColor,
+  cardTheme: const CardTheme(
+    surfaceTintColor: Colors.black,
+  ),
   appBarTheme: const AppBarTheme(
     surfaceTintColor: Colors.black,
   ),

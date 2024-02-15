@@ -9,7 +9,7 @@ const mediumSpacing = 16.0;
 const smallSpacing = 12.0;
 
 //styles
-const smallFont = 10.0;
+const smallFontSize = 10.0;
 const mediumFontSize = 18.0;
 const largeFontSize = 25.0;
 
