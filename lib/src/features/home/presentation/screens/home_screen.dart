@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../search/presentation/screens/open_camera_screen.dart';
 import '/src/features/home/presentation/widgets/spaced_row_widget.dart';
 import '../../../../constants/numbers.dart'
     show
@@ -24,32 +25,37 @@ class HomeScreen extends StatelessWidget {
         toolbarHeight: 40,
         title: const Text("AI STORE"),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(30),
+          preferredSize: const Size.fromHeight(45),
           child: GestureDetector(
             onTap: () {
-              //TODO  navigate to search
+              //TODO navigate to search screen
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Container(
-                padding: const EdgeInsets.all(3),
-                height: 35,
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                height: 40,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(cardBorderRadius),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Text("Search"),
-                    Spacer(),
-                    Icon(
-                      Icons.camera_enhance_outlined,
-                      size: 25,
-                    ),
-                    SizedBox(width: smallSpacing),
-                    Icon(
-                      Icons.search,
-                      size: 25,
+                    const Text("Search"),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.camera_enhance_outlined),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const OpenCameraScreen();
+                            },
+                          ),
+                        );
+                      },
+                      iconSize: 25,
                     ),
                   ],
                 ),

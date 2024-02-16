@@ -5,7 +5,9 @@ import 'src/constants/colors.dart' show darkTheme, lightTheme;
 import 'src/features/home/presentation/blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
 import 'src/features/home/presentation/screens/home_controller_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
