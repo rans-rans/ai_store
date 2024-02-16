@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../search/presentation/screens/open_camera_screen.dart';
+import '../../../search/presentation/screens/search_screen.dart';
 import '/src/features/home/presentation/widgets/spaced_row_widget.dart';
 import '../../../../constants/numbers.dart'
     show
@@ -29,6 +30,14 @@ class HomeScreen extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               //TODO navigate to search screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) {
+                    return const SearchScreen();
+                  },
+                ),
+              );
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),

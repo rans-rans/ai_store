@@ -16,7 +16,6 @@ class _OpenCameraScreenState extends State<OpenCameraScreen> {
 
   Future<void> isCameraEnabled() async {
     cameras = await availableCameras();
-    print(cameras);
     cameraController = CameraController(
       cameras[0],
       ResolutionPreset.veryHigh,
