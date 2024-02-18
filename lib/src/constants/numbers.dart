@@ -5,7 +5,7 @@ const defaultPadding = 12.0;
 const buttonBorderRadius = 15.0;
 const cardBorderRadius = 12.0;
 const inputBorderRadius = 25.0;
-const mediumSpacing = 16.0;
+const mediumSpacing = 20.0;
 const smallSpacing = 12.0;
 
 //styles

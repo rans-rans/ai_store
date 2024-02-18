@@ -11,11 +11,11 @@ import '../../../../constants/numbers.dart'
         mediumFontWeight,
         mediumSpacing,
         smallSpacing;
-import '../widgets/popular_card_widget.dart';
-import '../widgets/recent_activity_card.dart';
+import '../../../home/presentation/widgets/popular_card_widget.dart';
+import '../../../home/presentation/widgets/recent_activity_card.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class GeneralProductsScreen extends StatelessWidget {
+  const GeneralProductsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

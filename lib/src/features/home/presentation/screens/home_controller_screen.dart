@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, ReadContext;
 import '../../../cart/presentation/screens/cart_screen.dart';
 import '../blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
 import 'categories_screen.dart';
-import 'home_screen.dart';
+import '../../../products/presentation/screens/general_products_screen.dart';
 
 class HomeControllerScreen extends StatelessWidget {
   const HomeControllerScreen({super.key});
@@ -12,7 +12,7 @@ class HomeControllerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const screens = [
-      HomeScreen(),
+      GeneralProductsScreen(),
       CategoriesScreen(),
       CartScreen(),
       Text("Profile"),
