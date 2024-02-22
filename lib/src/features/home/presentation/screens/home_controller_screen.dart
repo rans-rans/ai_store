@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, ReadContext;
 
 import '../../../cart/presentation/screens/cart_screen.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
 import '../blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
 import 'categories_screen.dart';
 import '../../../products/presentation/screens/general_products_screen.dart';
@@ -15,7 +16,7 @@ class HomeControllerScreen extends StatelessWidget {
       GeneralProductsScreen(),
       CategoriesScreen(),
       CartScreen(),
-      Text("Profile"),
+      ProfileScreen(),
     ];
     return BlocBuilder<BottomNavigationCubit, int>(
       builder: (context, state) {
