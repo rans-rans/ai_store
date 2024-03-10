@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart' show MultiBlocProvider, BlocProv
 import 'src/constants/colors.dart' show darkTheme, lightTheme;
 import 'src/features/home/presentation/blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
 import 'src/features/home/presentation/screens/home_controller_screen.dart';
+import 'src/features/profile/presentation/blocs/segment_control/segment_control_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => BottomNavigationCubit(),
+        ),
+        BlocProvider(
+          create: (context) => CollectionsSegmentControl(),
         ),
       ],
       child: MaterialApp(

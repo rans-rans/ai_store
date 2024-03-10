@@ -278,6 +278,7 @@ class ProductDetailScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 100),
+                  //TODO add reviews and similar products below
                 ],
               ),
             )

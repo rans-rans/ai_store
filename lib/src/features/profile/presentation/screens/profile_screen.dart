@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../constants/numbers.dart';
 import '../../../../constants/strings.dart';
+import 'collection_screen.dart';
 import 'settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -64,6 +65,12 @@ class ProfileScreen extends StatelessWidget {
                   title: const Text("Collections"),
                   onTap: () {
                     //TODO navigate to collections(saved,wishlist,favorite)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CollectionsScreen(),
+                      ),
+                    );
                   },
                 ),
                 ListTile(
