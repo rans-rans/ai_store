@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../search/presentation/screens/open_camera_screen.dart';
 import '../../../search/presentation/screens/search_screen.dart';
+import '../blocs/products/products_bloc.dart';
 import '/src/features/home/presentation/widgets/spaced_row_widget.dart';
 import '../../../../constants/numbers.dart'
     show
@@ -12,7 +14,7 @@ import '../../../../constants/numbers.dart'
         mediumSpacing,
         smallSpacing;
 import '../../../home/presentation/widgets/popular_card_widget.dart';
-import '../../../home/presentation/widgets/recent_activity_card.dart';
+import '../../../home/presentation/widgets/product_card.dart';
 
 class GeneralProductsScreen extends StatelessWidget {
   const GeneralProductsScreen({super.key});
@@ -29,7 +31,6 @@ class GeneralProductsScreen extends StatelessWidget {
           preferredSize: const Size.fromHeight(45),
           child: GestureDetector(
             onTap: () {
-              //TODO navigate to search screen
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -73,75 +74,76 @@ class GeneralProductsScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(defaultPadding),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: size.height * 0.2,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(cardBorderRadius),
-                ),
-                child: const Placeholder(),
-              ),
-              //TODO  add carousel dots
-              const SizedBox(height: mediumSpacing),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Popular",
-                    style: TextStyle(
-                      fontWeight: mediumFontWeight,
-                      fontSize: mediumFontSize,
-                    ),
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          context.read<ProductsBloc>().add(GetProducts());
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Popular Categories",
+                  style: TextStyle(
+                    fontWeight: mediumFontWeight,
+                    fontSize: mediumFontSize,
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward),
-                    onPressed: () {
-                      //TODO  navigate to popular screen
-                    },
+                ),
+                const SizedBox(height: smallSpacing),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    //TODO top four popular categories come here
+                    children: [
+                      PopularCardWidget(),
+                      PopularCardWidget(),
+                      PopularCardWidget(),
+                      PopularCardWidget(),
+                    ],
+                  ).withSpacing(axis: Axis.horizontal),
+                ),
+                const SizedBox(height: mediumSpacing),
+                //TODO  place recently view products here
+                const SizedBox(height: mediumSpacing),
+                const Text(
+                  "Explore",
+                  style: TextStyle(
+                    fontWeight: mediumFontWeight,
                   ),
-                ],
-              ),
-              const SizedBox(height: smallSpacing),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    PopularCardWidget(),
-                    PopularCardWidget(),
-                    PopularCardWidget(),
-                    PopularCardWidget(),
-                    PopularCardWidget(),
-                  ],
-                ).withSpacing(axis: Axis.horizontal),
-              ),
-              const SizedBox(height: mediumSpacing),
-              const Text(
-                "Based on Recent Activity",
-                style: TextStyle(
-                  fontWeight: mediumFontWeight,
                 ),
-              ),
-              GridView.builder(
-                primary: false,
-                itemCount: 7,
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: size.width * 0.05,
+                BlocBuilder<ProductsBloc, ProductsState>(
+                  builder: (context, state) {
+                    return switch (state) {
+                      ProductsInitial() =>
+                        const Center(child: Text("Products Unavailable")),
+                      ProductsError() =>
+                        const Center(child: Text("Network unavailable")),
+                      ProductsLoading() => const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      ProductsSuccess() => GridView.builder(
+                          primary: false,
+                          itemCount: state.products.length,
+                          shrinkWrap: true,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: size.width * 0.05,
+                            mainAxisSpacing: size.height * 0.05,
+                          ),
+                          itemBuilder: (context, index) {
+                            return ProductCard(
+                              product: state.products[index],
+                            );
+                          },
+                        )
+                    };
+                  },
                 ),
-                itemBuilder: (context, index) {
-                  return const RecentActivityCard();
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

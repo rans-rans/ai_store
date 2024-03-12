@@ -5,6 +5,7 @@ const iphone15Image = "assets/images/iphone15_img.jpeg";
 const redDressImage = "assets/images/red_dress.jpg";
 const ps5PadImage = "assets/images/ps5_pad.png";
 const fridgeImage = "assets/images/fridge_image.jpg";
+const errorFallbackImage = "assets/images/error_fallback_image.png";
 
 //icons path
 const collectionIcon = "assets/icons/collection_icon.png";

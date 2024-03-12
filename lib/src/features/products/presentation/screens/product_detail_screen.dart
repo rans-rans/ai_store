@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:readmore/readmore.dart';
 
 import '../../../../constants/numbers.dart';
+import '../../../../utils/helper_functions.dart';
+import '../../domain/entities/product.dart';
+import '../blocs/product/product_bloc.dart';
 import '../widgets/image_carousel.dart';
 
 class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key});
+  final Product product;
+
+  const ProductDetailScreen({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -94,35 +101,37 @@ class ProductDetailScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    //TODO actual price over here
-                    const Text(
-                      "₵ 640.00",
-                      style: TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 2,
-                          horizontal: 5,
+                if (product.discount > 0)
+                  Row(
+                    children: [
+                      Text(
+                        HelperFunctions.formatToCurrency(product.price),
+                        style: const TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          color: Colors.grey,
                         ),
-                        //TODO discount percent over here
-                        child: Text("-22%"),
                       ),
-                    ),
-                  ],
-                ),
-                //TODO discount price over here
-                const Text(
-                  "₵ 500.00",
-                  style: TextStyle(
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 5,
+                          ),
+                          child: Text("${product.discount}%"),
+                        ),
+                      ),
+                    ],
+                  ),
+                Text(
+                  switch (product.discount > 0) {
+                    true => HelperFunctions.getDiscountAmount(
+                        product.price, product.discount),
+                    false => HelperFunctions.formatToCurrency(product.price),
+                  },
+                  style: const TextStyle(
                     fontWeight: mediumFontWeight,
                     fontSize: largeFontSize,
                   ),
@@ -150,50 +159,82 @@ class ProductDetailScreen extends StatelessWidget {
             Stack(
               alignment: Alignment.bottomRight,
               children: [
-                const ImageCarousel(),
+                ImageCarousel(imagePaths: product.images),
                 Positioned(
                   right: screenSize.width * 0.05,
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    child: IconButton(
-                      //TODO toggle isFavorite here
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.favorite_border,
-                        size: 40,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ),
+                  child: StreamBuilder(
+                      stream: context.read<ProductBloc>().listenToFavoriteStatus(
+                            //TODO user-id comes here
+                            userId: 'uuwf0DwxHi6cwG3vPZkJ',
+                            productId: product.id,
+                          ),
+                      builder: (context, snapshot) {
+                        final isFavorite = snapshot.data ?? false;
+
+                        return CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.white30,
+                          child: IconButton(
+                            onPressed: () {
+                              context.read<ProductBloc>().add(
+                                    ToggleProductFavorite(
+                                      productId: product.id,
+                                      //TODO user-id comes here
+                                      userId: 'uuwf0DwxHi6cwG3vPZkJ',
+                                      value: !isFavorite,
+                                    ),
+                                  );
+                            },
+                            icon: Icon(
+                                switch (isFavorite) {
+                                  true => Icons.favorite,
+                                  false => Icons.favorite_border,
+                                },
+                                size: 40,
+                                color: switch (isFavorite) {
+                                  true => Theme.of(context).primaryColor,
+                                  false => Theme.of(context).colorScheme.secondary,
+                                }),
+                          ),
+                        );
+                      }),
                 )
               ],
             ),
             const SizedBox(height: smallSpacing),
-            //TODO  item  name comes here
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "PS5 Controller Charger Playstation 5 Dualsense Charging Station Dock Mount For Dual Playstation 5 Controllers With LED Indicator",
+                  Text(
+                    product.name,
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
                     maxLines: 4,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: mediumFontWeight,
                     ),
                   ),
                   const SizedBox(height: smallSpacing),
-                  //TODO add a readmore widget here
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "New White color ps5 remote control gamepad PC, android LED light game joystick wireless games controller for ps5",
-                      maxLines: 2,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ReadMoreText(
+                      product.description,
+                      trimLines: 2,
+                      colorClickableText: Colors.pink,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: 'Show more',
+                      trimExpandedText: ' ...Show less',
+                      lessStyle: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor),
+                      moreStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                   ),
                   const SizedBox(height: smallSpacing),
@@ -224,16 +265,13 @@ class ProductDetailScreen extends StatelessWidget {
                       onSelected: (value) {
                         //TODO selected variant logic
                       },
-                      //TODO the list of variants come here
-                      dropdownMenuEntries: const [
-                        DropdownMenuEntry(
-                          value: "value",
-                          label: "label",
-                        ),
-                        DropdownMenuEntry(
-                          value: "value",
-                          label: "label 2",
-                        ),
+                      dropdownMenuEntries: [
+                        ...product.variants.map(
+                          (variant) => DropdownMenuEntry(
+                            value: variant,
+                            label: variant,
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -250,14 +288,14 @@ class ProductDetailScreen extends StatelessWidget {
                       0: FlexColumnWidth(0.4),
                       1: FlexColumnWidth(0.6),
                     },
-                    children: const [
-                      TableRow(
+                    children: [
+                      const TableRow(
                         children: [
                           Text("Condition"),
                           Text("New"),
                         ],
                       ),
-                      TableRow(
+                      const TableRow(
                         children: [
                           Text("Quanntity status"),
                           Text("Plenty"),
@@ -265,14 +303,12 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                       TableRow(
                         children: [
-                          Text("Brand"),
-                          Text("Sony"),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          Text("Type"),
-                          Text("Controller"),
+                          const Text("Brand"),
+                          Text(
+                            product.brand,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ],
