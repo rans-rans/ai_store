@@ -71,4 +71,26 @@ class FirebaseProductRepository implements ProductsRepository, ProductRepository
       userId: userId,
     );
   }
+
+  @override
+  Future<List<Product>> fetchProductsByBrand({required String brandName}) async {
+    try {
+      final mapStream =
+          await productsDataSource.fetchProductsByBrand(brandName: brandName);
+      return mapStream.map(FirebaseProduct.fromStorage).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Product>> fetchProductsByCategory({required String categoryId}) async {
+    try {
+      final mapStream =
+          await productsDataSource.fetchProductsBycategory(categoryId: categoryId);
+      return mapStream.map(FirebaseProduct.fromStorage).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

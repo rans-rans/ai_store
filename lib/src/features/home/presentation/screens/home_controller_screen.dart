@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, ReadContext;
 
 import '../../../cart/presentation/screens/cart_screen.dart';
+import '../../../categories/presentation/blocs/brand/brand_bloc.dart';
+import '../../../categories/presentation/blocs/category/category_bloc.dart';
 import '../../../products/presentation/blocs/products/products_bloc.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
-import 'categories_screen.dart';
+import '../../../categories/presentation/screens/all_categories_screen.dart';
 import '../../../products/presentation/screens/general_products_screen.dart';
 
 class HomeControllerScreen extends StatefulWidget {
@@ -19,14 +21,16 @@ class _HomeControllerScreenState extends State<HomeControllerScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductsBloc>().add(GetProducts());
+    context.read<ProductsBloc>().add(FetchProducts());
+    context.read<CategoryBloc>().add(FetchAllCategories());
+    context.read<BrandBloc>().add(FetchAllBrandsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     const screens = [
       GeneralProductsScreen(),
-      CategoriesScreen(),
+      AllCategoriesScreen(),
       CartScreen(),
       ProfileScreen(),
     ];

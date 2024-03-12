@@ -2,12 +2,11 @@ class Product {
   final String name;
   final String brand;
   final String id;
-  final String category;
+  final List<dynamic> category;
   final String description;
   final double discount;
   final List<dynamic> images;
   final double price;
-  final List<dynamic> subCategories;
   final List<dynamic> variants;
   Product({
     required this.name,
@@ -19,6 +18,5 @@ class Product {
     required this.discount,
     required this.images,
     required this.price,
-    required this.subCategories,
   });
 }

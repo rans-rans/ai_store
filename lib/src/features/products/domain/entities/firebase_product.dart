@@ -1,29 +1,28 @@
 import 'product.dart';
 
 class FirebaseProduct extends Product {
-  FirebaseProduct(
-      {required super.name,
-      required super.brand,
-      required super.id,
-      required super.category,
-      required super.description,
-      required super.variants,
-      required super.discount,
-      required super.images,
-      required super.price,
-      required super.subCategories});
+  FirebaseProduct({
+    required super.name,
+    required super.brand,
+    required super.id,
+    required super.category,
+    required super.description,
+    required super.variants,
+    required super.discount,
+    required super.images,
+    required super.price,
+  });
 
   Product copyWith({
     String? name,
     String? id,
-    String? category,
+    List<dynamic>? category,
     String? description,
     String? brand,
     double? discount,
     List<String>? images,
     List<String>? variants,
     double? price,
-    List<String>? subCategories,
   }) {
     return Product(
       name: name ?? this.name,
@@ -35,13 +34,12 @@ class FirebaseProduct extends Product {
       discount: discount ?? this.discount,
       images: images ?? this.images,
       price: price ?? this.price,
-      subCategories: subCategories ?? this.subCategories,
     );
   }
 
   @override
   String toString() {
-    return 'Product(name: $name, brand: $brand, id: $id, category: $category, description: $description, discount: $discount, images: $images, price: $price, subCategories: $subCategories)';
+    return 'Product(name: $name, brand: $brand, id: $id, category: $category, description: $description, discount: $discount, images: $images, price: $price)';
   }
 
   factory FirebaseProduct.fromStorage(Map<String, dynamic> data) {
@@ -50,12 +48,11 @@ class FirebaseProduct extends Product {
       brand: data['brand'] ?? "",
       id: data['id'],
       variants: data['variant'] ?? [],
-      category: data['category'] ?? "",
+      category: data['category'] ?? [],
       description: data['description'] ?? "",
       discount: (data['discount'] / 1.0) ?? 0.0,
       images: data['images'] ?? [],
       price: (data['price'] / 1.0) ?? 0.0,
-      subCategories: data['sub-categories'] ?? [],
     );
   }
 }

@@ -104,11 +104,13 @@ class ProductDetailScreen extends StatelessWidget {
                 if (product.discount > 0)
                   Row(
                     children: [
+                      //original price comes here
                       Text(
                         HelperFunctions.formatToCurrency(product.price),
                         style: const TextStyle(
                           decoration: TextDecoration.lineThrough,
-                          color: Colors.grey,
+                          // color: Colors.grey,
+                          fontWeight: mediumFontWeight,
                         ),
                       ),
                       DecoratedBox(
@@ -125,6 +127,7 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                //discount price comes here
                 Text(
                   switch (product.discount > 0) {
                     true => HelperFunctions.getDiscountAmount(

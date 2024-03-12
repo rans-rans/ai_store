@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../../utils/helper_functions.dart';
 import 'products_datasource.dart';
 
 class FirebaseDataSource implements ProductsDataSource {
@@ -15,9 +16,7 @@ class FirebaseDataSource implements ProductsDataSource {
   Future<List<Map<String, dynamic>>> fetchGeneralProducts() async {
     try {
       final response = await db.collection("products").limit(100).snapshots().first;
-      final docList = response.docs.map((event) {
-        return event.data();
-      }).toList();
+      final docList = HelperFunctions.getDocumentList(response);
       return docList;
     } catch (e) {
       rethrow;
@@ -77,5 +76,35 @@ class FirebaseDataSource implements ProductsDataSource {
       final isFavorite = (snapshot.data()?["is_favorite"] ?? false) as bool;
       return isFavorite;
     });
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> fetchProductsByBrand(
+      {required String brandName}) async {
+    try {
+      final response =
+          await db.collection('products').where('brand', isEqualTo: brandName).get();
+      final docList = HelperFunctions.getDocumentList(response);
+      return docList;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> fetchProductsBycategory({
+    required String categoryId,
+  }) async {
+    try {
+      var request = await db
+          .collection('products')
+          .where('category', arrayContains: categoryId)
+          .get();
+
+      final response = HelperFunctions.getDocumentList(request);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

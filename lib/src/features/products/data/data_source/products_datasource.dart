@@ -1,5 +1,10 @@
 abstract class ProductsDataSource {
   Future<List<Map<String, dynamic>>> fetchGeneralProducts();
+  Future<List<Map<String, dynamic>>> fetchProductsByBrand(
+      {required String brandName});
+  Future<List<Map<String, dynamic>>> fetchProductsBycategory(
+      {required String categoryId});
+
   Future<void> saveProduct(String productId);
   Future<void> toggleFavorite({
     required String productId,
