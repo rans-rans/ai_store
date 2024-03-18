@@ -6,13 +6,20 @@ import '../constants/strings.dart';
 class OnlineImage extends StatelessWidget {
   final String image;
   final double? height;
-  const OnlineImage({required this.image, this.height, super.key});
+  final double? width;
+  const OnlineImage({
+    required this.image,
+    this.width,
+    this.height,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: image,
       fit: BoxFit.cover,
+      width: width,
       useOldImageOnUrlChange: true,
       height: height,
       memCacheHeight: 200,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'src/features/cart/data/data_source/firebase_cart_datasource.dart';
+import 'src/features/cart/data/repository/firebase_cart_repository.dart';
+import 'src/features/cart/presentation/bloc/cart/cart_bloc.dart';
 import 'src/features/categories/data/datasource/firebase_category_datasource.dart';
 import 'src/features/categories/data/repositories/firebase_category_repository.dart';
 import 'src/features/categories/presentation/blocs/brand/brand_bloc.dart';
@@ -49,6 +52,12 @@ class Injector extends StatelessWidget {
                 categoryDatasource: FirebaseCategoryDatasource()),
           ),
         ),
+        BlocProvider(
+            create: (context) => CartBloc(
+                  FirebaseCartRepository(
+                    cartDatasource: FirebaseCartDatasource(),
+                  ),
+                )),
       ],
       child: child,
     );

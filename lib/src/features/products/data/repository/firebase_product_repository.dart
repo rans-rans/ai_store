@@ -21,12 +21,6 @@ class FirebaseProductRepository implements ProductsRepository, ProductRepository
   }
 
   @override
-  Future<void> addToCart(String productId) {
-    // TODO: implement addToCart
-    throw UnimplementedError();
-  }
-
-  @override
   Future<void> rateProduct(String productId) {
     // TODO: implement rateProduct
     throw UnimplementedError();

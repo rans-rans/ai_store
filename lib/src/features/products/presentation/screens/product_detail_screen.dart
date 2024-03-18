@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
+import '../../../../widgets/remove_from_cart_button.dart';
+import '../../../cart/domain/entities/firebase_cart.dart';
+import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../blocs/product/product_bloc.dart';
 import '../widgets/image_carousel.dart';
@@ -94,65 +98,130 @@ class ProductDetailScreen extends StatelessWidget {
         alignment: Alignment.center,
         color: Theme.of(context).colorScheme.secondary,
         padding: const EdgeInsets.all(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (product.discount > 0)
+        child: BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            if (state is CartFetchSuccess &&
+                state.cart.products
+                    .any((product) => product.productId == this.product.id)) {
+              final cartProduct = state.cart.products
+                  .firstWhere((item) => item.productId == product.id);
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RemoveFromCartButton(id: product.id),
                   Row(
                     children: [
-                      //original price comes here
-                      Text(
-                        HelperFunctions.formatToCurrency(product.price),
-                        style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          // color: Colors.grey,
-                          fontWeight: mediumFontWeight,
-                        ),
+                      //the decrement button
+                      IconButton(
+                        onPressed: () async {
+                          if (cartProduct.quantity == 1) return;
+                          context.read<CartBloc>().add(
+                                DecrementItemQuantity(
+                                  userId: dummyUserId,
+                                  productId: product.id,
+                                ),
+                              );
+                        },
+                        icon: const Icon(Icons.remove),
                       ),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 5,
-                          ),
-                          child: Text("${product.discount}%"),
-                        ),
+                      //the item quantity
+                      Text(cartProduct.quantity.toString()),
+
+                      //the increment button
+                      IconButton(
+                        onPressed: () async {
+                          context.read<CartBloc>().add(
+                                IncrementItemQuantity(
+                                  userId: dummyUserId,
+                                  productId: product.id,
+                                ),
+                              );
+                        },
+                        icon: const Icon(Icons.add),
                       ),
                     ],
-                  ),
-                //discount price comes here
-                Text(
-                  switch (product.discount > 0) {
-                    true => HelperFunctions.getDiscountAmount(
-                        product.price, product.discount),
-                    false => HelperFunctions.formatToCurrency(product.price),
+                  )
+                ],
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (product.discount > 0)
+                      Row(
+                        children: [
+                          //original price comes here
+                          Text(
+                            HelperFunctions.formatToCurrency(product.price),
+                            style: const TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              // color: Colors.grey,
+                              fontWeight: mediumFontWeight,
+                            ),
+                          ),
+                          //discount percent shows here
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 5,
+                              ),
+                              child: Text("${product.discount}%"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    //discount price comes here
+                    Text(
+                      switch (product.discount > 0) {
+                        true => HelperFunctions.getDiscountAmount(
+                            product.price, product.discount),
+                        false => HelperFunctions.formatToCurrency(product.price),
+                      },
+                      style: const TextStyle(
+                        fontWeight: mediumFontWeight,
+                        fontSize: largeFontSize,
+                      ),
+                    ),
+                  ],
+                ),
+
+                //ADD TO CART button
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<CartBloc>().add(
+                          AddProductToCartEvent(
+                            cartItem: FirebaseCartItem(
+                              name: product.name,
+                              productId: product.id,
+                              quantity: 1,
+                              //TODO  use discount price rather
+                              price: product.price,
+                              image: product.images.first,
+                            ),
+                            userId: dummyUserId,
+                          ),
+                        );
                   },
-                  style: const TextStyle(
-                    fontWeight: mediumFontWeight,
-                    fontSize: largeFontSize,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: Size(screenSize.width * 0.4, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(buttonBorderRadius),
+                    ),
                   ),
+                  child: const Text("ADD TO CART"),
                 ),
               ],
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                minimumSize: Size(screenSize.width * 0.4, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(buttonBorderRadius),
-                ),
-              ),
-              child: const Text("ADD TO CART"),
-            ),
-          ],
+            );
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -168,7 +237,7 @@ class ProductDetailScreen extends StatelessWidget {
                   child: StreamBuilder(
                       stream: context.read<ProductBloc>().listenToFavoriteStatus(
                             //TODO user-id comes here
-                            userId: 'uuwf0DwxHi6cwG3vPZkJ',
+                            userId: dummyUserId,
                             productId: product.id,
                           ),
                       builder: (context, snapshot) {
@@ -183,7 +252,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     ToggleProductFavorite(
                                       productId: product.id,
                                       //TODO user-id comes here
-                                      userId: 'uuwf0DwxHi6cwG3vPZkJ',
+                                      userId: dummyUserId,
                                       value: !isFavorite,
                                     ),
                                   );
