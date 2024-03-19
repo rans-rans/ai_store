@@ -7,12 +7,6 @@ class FirebaseDataSource implements ProductsDataSource {
   final db = FirebaseFirestore.instance;
 
   @override
-  Future<void> addToCart(String productId) {
-    // TODO: implement addToCart
-    throw UnimplementedError();
-  }
-
-  @override
   Future<List<Map<String, dynamic>>> fetchGeneralProducts() async {
     try {
       final response = await db.collection("products").limit(100).snapshots().first;
@@ -42,23 +36,23 @@ class FirebaseDataSource implements ProductsDataSource {
   }
 
   @override
-  Future<void> toggleFavorite(
-      {required String userId,
-      required String productId,
-      required bool value}) async {
-    try {
-      return await db
-          .collection('products')
-          .doc(productId)
-          .collection('favorites')
-          .doc(userId)
-          .set(
-        {'is_favorite': value},
-        SetOptions(merge: true),
-      );
-    } catch (e) {
-      rethrow;
-    }
+  Future<void> toggleFavorite({
+    required String userId,
+    required String productId,
+  }) async {
+    // try {
+    //   return await db
+    //       .collection('products')
+    //       .doc(productId)
+    //       .collection('favorites')
+    //       .doc(userId)
+    //       .set(
+    //     {'is_favorite': value},
+    //     SetOptions(merge: true),
+    //   );
+    // } catch (e) {
+    //   rethrow;
+    // }
   }
 
   @override
@@ -80,10 +74,10 @@ class FirebaseDataSource implements ProductsDataSource {
 
   @override
   Future<List<Map<String, dynamic>>> fetchProductsByBrand(
-      {required String brandName}) async {
+      {required String brandID}) async {
     try {
       final response =
-          await db.collection('products').where('brand', isEqualTo: brandName).get();
+          await db.collection('products').where('brand', isEqualTo: brandID).get();
       final docList = HelperFunctions.getDocumentList(response);
       return docList;
     } catch (e) {

@@ -9,8 +9,8 @@ import 'src/features/categories/data/repositories/firebase_category_repository.d
 import 'src/features/categories/presentation/blocs/brand/brand_bloc.dart';
 import 'src/features/categories/presentation/blocs/category/category_bloc.dart';
 import 'src/features/home/presentation/blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
-import 'src/features/products/data/data_source/firebase_datasource.dart';
-import 'src/features/products/data/repository/firebase_product_repository.dart';
+import 'src/features/products/data/data_source/supabase_datasource.dart';
+import 'src/features/products/data/repository/supabase_product_repository.dart';
 import 'src/features/products/presentation/blocs/product/product_bloc.dart';
 import 'src/features/products/presentation/blocs/products/products_bloc.dart';
 import 'src/features/profile/presentation/blocs/segment_control/segment_control_cubit.dart';
@@ -21,7 +21,8 @@ class Injector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firebaseDataSource = FirebaseDataSource();
+    final supabaseProductsRepository =
+        SupabaseProductRepository(productsDataSource: SupabaseDatasource());
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -31,14 +32,10 @@ class Injector extends StatelessWidget {
           create: (context) => CollectionsSegmentControl(),
         ),
         BlocProvider(
-          create: (context) => ProductsBloc(
-            FirebaseProductRepository(productsDataSource: firebaseDataSource),
-          ),
+          create: (context) => ProductsBloc(supabaseProductsRepository),
         ),
         BlocProvider(
-          create: (context) => ProductBloc(
-            FirebaseProductRepository(productsDataSource: firebaseDataSource),
-          ),
+          create: (context) => ProductBloc(supabaseProductsRepository),
         ),
         BlocProvider(
           create: (context) => CategoryBloc(

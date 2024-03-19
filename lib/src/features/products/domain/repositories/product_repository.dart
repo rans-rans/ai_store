@@ -3,7 +3,6 @@ abstract class ProductRepository {
   Future<void> toggleFavorite({
     required String productId,
     required String userId,
-    required bool value,
   });
 
   Future<void> rateProduct(String productId);

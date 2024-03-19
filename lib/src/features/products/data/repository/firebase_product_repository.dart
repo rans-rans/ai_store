@@ -42,17 +42,16 @@ class FirebaseProductRepository implements ProductsRepository, ProductRepository
   Future<void> toggleFavorite({
     required String productId,
     required String userId,
-    required bool value,
   }) async {
-    try {
-      return await productsDataSource.toggleFavorite(
-        productId: productId,
-        userId: userId,
-        value: value,
-      );
-    } catch (e) {
-      rethrow;
-    }
+    // try {
+    //   return await productsDataSource.toggleFavorite(
+    //     productId: productId,
+    //     userId: userId,
+    //     value: value,
+    //   );
+    // } catch (e) {
+    //   rethrow;
+    // }
   }
 
   @override
@@ -67,10 +66,10 @@ class FirebaseProductRepository implements ProductsRepository, ProductRepository
   }
 
   @override
-  Future<List<Product>> fetchProductsByBrand({required String brandName}) async {
+  Future<List<Product>> fetchProductsByBrand({required String brandID}) async {
     try {
       final mapStream =
-          await productsDataSource.fetchProductsByBrand(brandName: brandName);
+          await productsDataSource.fetchProductsByBrand(brandID: brandID);
       return mapStream.map(FirebaseProduct.fromStorage).toList();
     } catch (e) {
       rethrow;

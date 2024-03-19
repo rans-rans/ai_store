@@ -12,7 +12,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   Future<List<Product>> fetchProductsByBrand(String brandName) async {
     try {
       final response =
-          await _productsRepository.fetchProductsByBrand(brandName: brandName);
+          await _productsRepository.fetchProductsByBrand(brandID: brandName);
       return response;
     } catch (e) {
       rethrow;

@@ -23,7 +23,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       _productRepository.toggleFavorite(
         productId: event.productId,
         userId: event.userId,
-        value: event.value,
       );
     });
   }

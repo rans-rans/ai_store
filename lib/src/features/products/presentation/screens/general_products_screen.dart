@@ -98,6 +98,8 @@ class GeneralProductsScreen extends StatelessWidget {
                       CategoriesFetchFailed() => const Text("Check your connection"),
                       CategoriesFetchSuccess() => SizedBox(
                           height: size.height * 0.25,
+                          // child: FractionallySizedBox(
+                          //   heightFactor: 0.25,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: 4,
@@ -110,6 +112,7 @@ class GeneralProductsScreen extends StatelessWidget {
                               );
                             },
                           ),
+                          // ),
                         )
                     };
                   },

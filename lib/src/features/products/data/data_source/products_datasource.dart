@@ -1,7 +1,8 @@
 abstract class ProductsDataSource {
   Future<List<Map<String, dynamic>>> fetchGeneralProducts();
-  Future<List<Map<String, dynamic>>> fetchProductsByBrand(
-      {required String brandName});
+  Future<List<Map<String, dynamic>>> fetchProductsByBrand({
+    required String brandID,
+  });
   Future<List<Map<String, dynamic>>> fetchProductsBycategory(
       {required String categoryId});
 
@@ -9,9 +10,7 @@ abstract class ProductsDataSource {
   Future<void> toggleFavorite({
     required String productId,
     required String userId,
-    required bool value,
   });
-  Future<void> addToCart(String productId);
   Future<void> rateProduct(String productId);
   Future<void> removeSavedProduct(String productId);
 

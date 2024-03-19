@@ -3,6 +3,7 @@ import 'product.dart';
 class FirebaseProduct extends Product {
   FirebaseProduct({
     required super.name,
+    required super.quantity,
     required super.brand,
     required super.id,
     required super.category,
@@ -13,40 +14,12 @@ class FirebaseProduct extends Product {
     required super.price,
   });
 
-  Product copyWith({
-    String? name,
-    String? id,
-    List<dynamic>? category,
-    String? description,
-    String? brand,
-    double? discount,
-    List<String>? images,
-    List<String>? variants,
-    double? price,
-  }) {
-    return Product(
-      name: name ?? this.name,
-      brand: brand ?? this.brand,
-      id: id ?? this.id,
-      variants: variants ?? this.variants,
-      category: category ?? this.category,
-      description: description ?? this.description,
-      discount: discount ?? this.discount,
-      images: images ?? this.images,
-      price: price ?? this.price,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Product(name: $name, brand: $brand, id: $id, category: $category, description: $description, discount: $discount, images: $images, price: $price)';
-  }
-
   factory FirebaseProduct.fromStorage(Map<String, dynamic> data) {
     return FirebaseProduct(
       name: data['name'] ?? "",
       brand: data['brand'] ?? "",
       id: data['id'],
+      quantity: 10,
       variants: data['variant'] ?? [],
       category: data['category'] ?? [],
       description: data['description'] ?? "",
