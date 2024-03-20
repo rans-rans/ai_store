@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'src/features/cart/data/data_source/firebase_cart_datasource.dart';
 import 'src/features/cart/data/repository/firebase_cart_repository.dart';
 import 'src/features/cart/presentation/bloc/cart/cart_bloc.dart';
-import 'src/features/categories/data/datasource/firebase_category_datasource.dart';
-import 'src/features/categories/data/repositories/firebase_category_repository.dart';
+import 'src/features/categories/data/datasource/supabase_category_datasource.dart';
+import 'src/features/categories/data/repositories/supabase_category_repository.dart';
 import 'src/features/categories/presentation/blocs/brand/brand_bloc.dart';
 import 'src/features/categories/presentation/blocs/category/category_bloc.dart';
 import 'src/features/home/presentation/blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
-import 'src/features/products/data/data_source/supabase_datasource.dart';
+import 'src/features/products/data/data_source/supabase_products_datasource.dart';
 import 'src/features/products/data/repository/supabase_product_repository.dart';
 import 'src/features/products/presentation/blocs/product/product_bloc.dart';
 import 'src/features/products/presentation/blocs/products/products_bloc.dart';
@@ -22,7 +22,9 @@ class Injector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final supabaseProductsRepository =
-        SupabaseProductRepository(productsDataSource: SupabaseDatasource());
+        SupabaseProductRepository(productsDataSource: SupabaseProductsDatasource());
+    final supabaseCategoryRepository =
+        SupabaseCategoryRepository(categoryDatasource: SupabaseCategoryDatasource());
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -39,22 +41,19 @@ class Injector extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CategoryBloc(
-            FirebaseCategoryRepository(
-                categoryDatasource: FirebaseCategoryDatasource()),
+            SupabaseCategoryRepository(
+                categoryDatasource: SupabaseCategoryDatasource()),
           ),
         ),
         BlocProvider(
-          create: (context) => BrandBloc(
-            categoryRepository: FirebaseCategoryRepository(
-                categoryDatasource: FirebaseCategoryDatasource()),
-          ),
+          create: (context) =>
+              BrandBloc(categoryRepository: supabaseCategoryRepository),
         ),
         BlocProvider(
-            create: (context) => CartBloc(
-                  FirebaseCartRepository(
-                    cartDatasource: FirebaseCartDatasource(),
-                  ),
-                )),
+          create: (context) => CartBloc(
+            FirebaseCartRepository(cartDatasource: FirebaseCartDatasource()),
+          ),
+        ),
       ],
       child: child,
     );

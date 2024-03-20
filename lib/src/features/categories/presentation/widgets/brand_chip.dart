@@ -20,7 +20,7 @@ class BrandChip extends StatelessWidget {
       onTap: () {
         HelperFunctions.gotoPage(
           context: context,
-          page: BrandProductsScreen(brandName: brand.name),
+          page: BrandProductsScreen(brand: brand),
         );
       },
       child: Column(

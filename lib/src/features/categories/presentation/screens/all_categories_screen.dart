@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/numbers.dart';
-import '../../../../utils/helper_functions.dart';
 import '../../domain/entities/category.dart';
 import '../blocs/category/category_bloc.dart';
 import '../widgets/categories_list.dart';
 import '../widgets/category_tag_card.dart';
-import 'category_products_screen.dart';
 
 class AllCategoriesScreen extends StatefulWidget {
   const AllCategoriesScreen({super.key});
@@ -21,7 +19,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
   late AnimationController heightAnimationController;
   late Animation<double> topContainerAnimation;
 
-  Category? selectedCategory;
+  final selectedCategory = ValueNotifier<Category?>(null);
 
   late Size screenSize;
 
@@ -54,48 +52,66 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
           (MediaQuery.paddingOf(context).bottom - kBottomNavigationBarHeight),
     ).animate(heightAnimationController);
 
-    return Stack(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: const CategoriesList(),
-        ),
-        AnimatedBuilder(
-          animation: topContainerAnimation,
-          builder: (context, child) {
-            return Container(
-              color: Colors.grey.shade200,
-              height: topContainerAnimation.value,
-              child: Column(
-                children: [
-                  SizedBox(height: MediaQuery.paddingOf(context).top),
-                  Row(
-                    children: [
-                      const Spacer(),
-                      const Text(
-                        "AI STORE",
-                        style: TextStyle(
-                          fontSize: mediumFontSize,
-                        ),
-                      ),
-                      const Spacer(),
-                      InkWell(
-                        onTap: toggleDrawer,
-                        child: const Icon(
-                          Icons.menu,
-                          size: 40,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: BlocBuilder<CategoryBloc, CategoryState>(
-                      builder: (context, state) {
-                        return switch (state) {
-                          CategoriesFetchLoading() => const Center(
-                              child: CircularProgressIndicator.adaptive()),
-                          CategoriesFetchSuccess() => GridView.builder(
-                              itemCount: state.categories.length,
+    return BlocBuilder<CategoryBloc, CategoryState>(
+      builder: (context, state) {
+        switch (state) {
+          case CategoriesFetchLoading():
+            return const Center(child: CircularProgressIndicator.adaptive());
+          case CategoriesInitial() || CategoriesFetchFailed():
+            return Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  context.read<CategoryBloc>().add(FetchAllCategories());
+                },
+                child: const Text("Reload"),
+              ),
+            );
+          case CategoriesFetchSuccess():
+            final categories = state.categories;
+            selectedCategory.value = categories.first;
+            return Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: ValueListenableBuilder(
+                      valueListenable: selectedCategory,
+                      builder: (context, selected, child) {
+                        return CategoriesList(
+                          categoryId: selected!.id,
+                        );
+                      }),
+                ),
+                AnimatedBuilder(
+                  animation: topContainerAnimation,
+                  builder: (context, child) {
+                    return Container(
+                      color: Colors.grey.shade200,
+                      height: topContainerAnimation.value,
+                      child: Column(
+                        children: [
+                          SizedBox(height: MediaQuery.paddingOf(context).top),
+                          Row(
+                            children: [
+                              const Spacer(),
+                              Text(
+                                selectedCategory.value?.name ?? "",
+                                style: const TextStyle(
+                                  fontSize: mediumFontSize,
+                                ),
+                              ),
+                              const Spacer(),
+                              InkWell(
+                                onTap: () => toggleDrawer(null),
+                                child: const Icon(
+                                  Icons.menu,
+                                  size: 40,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: GridView.builder(
+                              itemCount: categories.length,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -107,44 +123,37 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
                                 return CategoryTagCard(
                                   category: category,
                                   onTap: () {
-                                    toggleDrawer();
-                                    HelperFunctions.gotoPage(
-                                      context: context,
-                                      page:
-                                          CategoryProductsScreen(category: category),
-                                    );
+                                    toggleDrawer(category);
+                                    // HelperFunctions.gotoPage(
+                                    //   context: context,
+                                    //   page:
+                                    //       CategoryProductsScreen(category: category),
+                                    // );
                                   },
                                 );
                               },
                             ),
-                          _ => Center(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  context
-                                      .read<CategoryBloc>()
-                                      .add(FetchAllCategories());
-                                },
-                                child: const Text("Reload"),
-                              ),
-                            ),
-                        };
-                      },
-                    ),
-                  )
-                ],
-              ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             );
-          },
-        ),
-      ],
+        }
+      },
     );
   }
 
-  void toggleDrawer() {
+  void toggleDrawer(Category? category) {
     if (heightAnimationController.isCompleted) {
       heightAnimationController.reverse();
     } else {
       heightAnimationController.forward();
+    }
+    if (category != null) {
+      selectedCategory.value = category;
     }
   }
 }

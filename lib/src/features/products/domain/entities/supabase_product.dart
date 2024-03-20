@@ -16,12 +16,14 @@ class SupabaseProduct extends Product {
 
   factory SupabaseProduct.fromStorage(Map<String, dynamic> data) {
     try {
+      List<dynamic> variants = data['variations'];
+      variants = variants.toSet().toList();
       return SupabaseProduct(
         name: data['name'],
         brand: data['brand_id'],
         quantity: data['quantity'],
         id: data['product_id'],
-        variants: data['variations'],
+        variants: variants,
         category: data['category_id'],
         description: data['description'],
         discount: (data['discount'] / 1.0),

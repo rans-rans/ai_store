@@ -98,8 +98,6 @@ class GeneralProductsScreen extends StatelessWidget {
                       CategoriesFetchFailed() => const Text("Check your connection"),
                       CategoriesFetchSuccess() => SizedBox(
                           height: size.height * 0.25,
-                          // child: FractionallySizedBox(
-                          //   heightFactor: 0.25,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: 4,
@@ -112,7 +110,6 @@ class GeneralProductsScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          // ),
                         )
                     };
                   },
@@ -138,8 +135,8 @@ class GeneralProductsScreen extends StatelessWidget {
                         ),
                       ProductsSuccess() => GridView.builder(
                           primary: false,
-                          itemCount: state.products.length,
                           shrinkWrap: true,
+                          itemCount: state.products.length,
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: size.width * 0.05,

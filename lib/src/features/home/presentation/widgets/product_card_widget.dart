@@ -15,11 +15,9 @@ class ProductCardWidget extends StatelessWidget {
     final screenSize = MediaQuery.sizeOf(context);
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ProductDetailScreen(product: product),
-          ),
+        HelperFunctions.gotoPage(
+          context: context,
+          page: ProductDetailScreen(product: product),
         );
       },
       child: Padding(

@@ -9,24 +9,24 @@ import 'categories_just_for_you_widget.dart';
 import '../../../home/presentation/widgets/product_card_widget.dart';
 
 class CategoriesList extends StatelessWidget {
-  const CategoriesList({super.key});
+  final String categoryId;
+  const CategoriesList({required this.categoryId, super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
+      primary: true,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: MediaQuery.paddingOf(context).top + 41),
-          // TODO  category name comes here
           const Text(
             "Brands",
             style: TextStyle(fontSize: mediumFontSize),
           ),
-
           const SizedBox(height: mediumSpacing * 2),
-          //TODO  sub-categories comes here
           SizedBox(
             height: screenSize.height * 0.2,
             child: BlocBuilder<BrandBloc, BrandState>(
@@ -52,69 +52,69 @@ class CategoriesList extends StatelessWidget {
             ),
           ),
           const SizedBox(height: mediumSpacing * 3),
-          BlocBuilder<ProductsBloc, ProductsState>(
-            builder: (context, state) {
-              if (state is! ProductsSuccess) return const SizedBox.shrink();
+          FutureBuilder(
+            future: context.read<ProductsBloc>().fetchProductsByCategory(categoryId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: Text('Loading'));
+              }
+              if (snapshot.data == null) {
+                return const Center(child: Text('Error occurred'));
+              }
+              final products = snapshot.data!;
+
+              if (products.isEmpty) {
+                return const Center(
+                  child: Text('No data available'),
+                );
+              }
+
               final promotionalProducts =
-                  state.products.where((product) => product.discount > 0).toList();
+                  products.where((product) => product.discount > 0).toList();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Limited time deals",
-                    style: TextStyle(
-                      fontSize: mediumFontSize,
-                      fontWeight: mediumFontWeight,
+                  if (promotionalProducts.isNotEmpty)
+                    Column(
+                      children: [
+                        const Text(
+                          "Limited time deals",
+                          style: TextStyle(
+                            fontSize: mediumFontSize,
+                            fontWeight: mediumFontWeight,
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenSize.height * 0.27,
+                          child: ListView.builder(
+                            itemCount: promotionalProducts.length,
+                            itemExtent: screenSize.width * 0.42,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return ProductCardWidget(
+                                product: promotionalProducts[index],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                    height: screenSize.height * 0.27,
-                    child: ListView.builder(
-                      itemCount: promotionalProducts.length < 50
-                          ? promotionalProducts.length
-                          : 50,
-                      itemExtent: screenSize.width * 0.42,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return ProductCardWidget(
-                          product: promotionalProducts[index],
-                        );
-                      },
+                  GridView.builder(
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount: products.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: 250,
+                      crossAxisSpacing: screenSize.width * 0.05,
                     ),
+                    itemBuilder: (context, index) {
+                      return CategoriesJustForYouWidget(
+                        product: products[index],
+                      );
+                    },
                   ),
                 ],
-              );
-            },
-          ),
-          const SizedBox(height: mediumSpacing),
-          const Text(
-            "Under ₵50",
-            style: TextStyle(
-              fontWeight: mediumFontWeight,
-              fontSize: mediumFontSize,
-            ),
-          ),
-          BlocBuilder<ProductsBloc, ProductsState>(
-            builder: (context, state) {
-              if (state is! ProductsSuccess) {
-                return const SizedBox.shrink();
-              }
-              final items =
-                  state.products.where((item) => item.price <= 50).toList();
-              return GridView.builder(
-                primary: false,
-                shrinkWrap: true,
-                itemCount: items.length < 25 ? items.length : 25,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisExtent: 250,
-                  crossAxisSpacing: screenSize.width * 0.05,
-                ),
-                itemBuilder: (context, index) {
-                  return CategoriesJustForYouWidget(
-                    product: items[index],
-                  );
-                },
               );
             },
           ),

@@ -1,11 +1,11 @@
 import '../../../../constants/objects.dart';
 import 'products_datasource.dart';
 
-class SupabaseDatasource implements ProductsDataSource {
+class SupabaseProductsDatasource implements ProductsDataSource {
   @override
   Future<List<Map<String, dynamic>>> fetchGeneralProducts() async {
     try {
-      final response = await supabaseInstance.rpc('fetchgeneralproducts').limit(50)
+      final response = await supabaseInstance.rpc('fetchgeneralproducts').limit(20)
           as List<dynamic>;
       return response.map((e) => e as Map<String, dynamic>).toList();
     } catch (e) {
@@ -14,26 +14,30 @@ class SupabaseDatasource implements ProductsDataSource {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> fetchProductsByBrand(
-      {required String brandID}) async {
+  Future<List<Map<String, dynamic>>> fetchProductsByBrand({
+    required String brandID,
+  }) async {
     try {
-      final response =
-          await supabaseInstance.from('products').select().eq('brand_id', brandID);
-      return response;
+      final response = await supabaseInstance.rpc(
+        'fetchproductsbrand',
+        params: {'p_brand_id': brandID},
+      ) as List<dynamic>;
+      return response.map((e) => e as Map<String, dynamic>).toList();
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<List<Map<String, dynamic>>> fetchProductsBycategory(
-      {required String categoryId}) async {
+  Future<List<Map<String, dynamic>>> fetchProductsBycategory({
+    required String categoryId,
+  }) async {
     try {
-      final response = await supabaseInstance
-          .from('products')
-          .select()
-          .eq('category_id', categoryId);
-      return response;
+      final response = await supabaseInstance.rpc(
+        'fetchproductsbycategory',
+        params: {'p_category_id': categoryId},
+      ) as List<dynamic>;
+      return response.map((e) => e as Map<String, dynamic>).toList();
     } catch (e) {
       rethrow;
     }

@@ -6,20 +6,22 @@ import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/online_image.dart';
 import '../../../products/presentation/blocs/products/products_bloc.dart';
 import '../../../products/presentation/screens/product_detail_screen.dart';
+import '../../domain/entities/brand.dart';
 
 class BrandProductsScreen extends StatelessWidget {
-  final String brandName;
+  final Brand brand;
 
-  const BrandProductsScreen({super.key, required this.brandName});
+  const BrandProductsScreen({super.key, required this.brand});
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(brandName),
+        title: Text(brand.name),
       ),
       body: FutureBuilder(
-          future: context.read<ProductsBloc>().fetchProductsByBrand(brandName),
+          future: context.read<ProductsBloc>().fetchProductsByBrand(brand.id),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -38,8 +40,14 @@ class BrandProductsScreen extends StatelessWidget {
                       page: ProductDetailScreen(product: product),
                     );
                   },
-                  leading: OnlineImage(image: product.images.first),
-                  title: Text(product.name),
+                  leading: OnlineImage(
+                    image: product.images.first,
+                    width: screenSize.width * 0.25,
+                  ),
+                  title: Text(
+                    product.name,
+                    maxLines: 2,
+                  ),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -66,9 +74,9 @@ class BrandProductsScreen extends StatelessWidget {
                   ),
                   subtitle: Text(
                     product.description,
-                    maxLines: 3,
+                    maxLines: 1,
+                    style: const TextStyle(color: Colors.grey),
                   ),
-                  isThreeLine: true,
                 );
               },
             );
