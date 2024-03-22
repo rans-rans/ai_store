@@ -1,31 +1,31 @@
 abstract class Cart {
-  final String userId;
   final List<CartItem> products;
 
-  Cart({required this.userId, required this.products});
+  Cart({required this.products});
 
   Map<String, dynamic> toServer();
 }
 
 abstract class CartItem {
-  final String name;
-  final String productId;
   final int quantity;
-  final double price;
-  final String image;
+  final String productId;
+  final String userId;
+
+  final double discount;
+  final String productName;
+  final double productPrice;
+
+  final String imageUrl;
 
   CartItem({
-    required this.name,
-    required this.productId,
     required this.quantity,
-    required this.price,
-    required this.image,
+    required this.productId,
+    required this.userId,
+    required this.discount,
+    required this.productName,
+    required this.productPrice,
+    required this.imageUrl,
   });
-
-  // 'quantity': quantity,
-  // 'price': product.price,
-  // 'name': product.name,
-  // 'image': product.images.first,
 
   Map<String, dynamic> toServer();
 }

@@ -1,26 +1,24 @@
-import 'package:ai_store/src/constants/api_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../constants/api_constants.dart';
 import '../features/cart/presentation/bloc/cart/cart_bloc.dart';
 
 class RemoveFromCartButton extends StatelessWidget {
   const RemoveFromCartButton({
     super.key,
-    required this.id,
+    required this.productId,
   });
 
-  final String id;
+  final String productId;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        context.read<CartBloc>().add(
-              RemoveProductFromCartEvent(
-                userId: dummyUserId,
-                productId: id,
-              ),
+        context.read<CartBloc>().removeProductFromCart(
+              productId: productId,
+              userId: dummyUserId,
             );
       },
       child: Text(

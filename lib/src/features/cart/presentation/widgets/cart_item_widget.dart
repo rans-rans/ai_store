@@ -23,7 +23,7 @@ class CartItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           OnlineImage(
-            image: cartItem.image,
+            image: cartItem.imageUrl,
             width: screenSize.width * 0.4,
           ),
           const SizedBox(width: smallSpacing),
@@ -34,7 +34,7 @@ class CartItemWidget extends StatelessWidget {
               SizedBox(
                 width: screenSize.width * 0.5,
                 child: Text(
-                  cartItem.name,
+                  cartItem.productName,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: const TextStyle(
@@ -53,14 +53,15 @@ class CartItemWidget extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
-                      if (cartItem.quantity <= 1) return;
-                      context.read<CartBloc>().add(
-                            DecrementItemQuantity(
-                              userId: dummyUserId,
-                              productId: cartItem.productId,
-                            ),
-                          );
+                    onPressed: switch (cartItem.quantity <= 1) {
+                      true => null,
+                      false => () {
+                          context.read<CartBloc>().changeItemQuantity(
+                                quantity: cartItem.quantity - 1,
+                                productId: cartItem.productId,
+                                userId: dummyUserId,
+                              );
+                        },
                     },
                     icon: const Icon(Icons.remove),
                   ),
@@ -68,11 +69,10 @@ class CartItemWidget extends StatelessWidget {
                   Text(cartItem.quantity.toString()),
                   IconButton(
                     onPressed: () {
-                      context.read<CartBloc>().add(
-                            IncrementItemQuantity(
-                              userId: dummyUserId,
-                              productId: cartItem.productId,
-                            ),
+                      context.read<CartBloc>().changeItemQuantity(
+                            quantity: cartItem.quantity + 1,
+                            productId: cartItem.productId,
+                            userId: dummyUserId,
                           );
                     },
                     icon: const Icon(Icons.add),
@@ -81,7 +81,8 @@ class CartItemWidget extends StatelessWidget {
               ),
               //item price over here
               Text(
-                HelperFunctions.formatToCurrency(cartItem.price * cartItem.quantity),
+                HelperFunctions.formatToCurrency(
+                    cartItem.productPrice * cartItem.quantity),
                 style: const TextStyle(
                   fontSize: mediumFontSize,
                   fontWeight: boldestFontWeight,
@@ -89,7 +90,7 @@ class CartItemWidget extends StatelessWidget {
               ),
               // const Spacer(),
               RemoveFromCartButton(
-                id: cartItem.productId,
+                productId: cartItem.productId,
               ),
             ],
           ),

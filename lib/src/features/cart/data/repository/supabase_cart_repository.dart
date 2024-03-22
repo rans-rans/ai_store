@@ -1,13 +1,12 @@
-import 'package:ai_store/src/features/cart/domain/entities/cart.dart';
-
-import '../../domain/entities/firebase_cart.dart';
+import '../../domain/entities/cart.dart';
+import '../../domain/entities/supabase_cart.dart';
 import '../../domain/repositories/cart_repository.dart';
 import '../data_source/cart_datasource.dart';
 
-class FirebaseCartRepository implements CartRepository {
+class SupabaseCartRepository implements CartRepository {
   final CartDatasource cartDatasource;
 
-  FirebaseCartRepository({required this.cartDatasource});
+  SupabaseCartRepository({required this.cartDatasource});
   @override
   Future<void> addProductToCart({
     required CartItem cartItem,
@@ -24,14 +23,16 @@ class FirebaseCartRepository implements CartRepository {
   }
 
   @override
-  Future<void> incrementItemQuantity({
+  Future<void> changeProductQuantity({
     required String productId,
     required String userId,
+    required int quantity,
   }) async {
     try {
-      return await cartDatasource.incrementItemQuantity(
+      return await cartDatasource.changeProductQuantity(
         productId: productId,
         userId: userId,
+        quantity: quantity,
       );
     } catch (e) {
       rethrow;
@@ -39,32 +40,12 @@ class FirebaseCartRepository implements CartRepository {
   }
 
   @override
-  Future<void> decrementItemQuantity({
-    required String productId,
-    required String userId,
-  }) async {
+  Future<Cart> fetchUserCart({required String userId}) async {
     try {
-      return await cartDatasource.decrementItemQuantity(
-        productId: productId,
-        userId: userId,
-      );
-    } catch (_) {
-      rethrow;
-    }
-  }
-
-  @override
-  Stream<Cart> fetchUserCart({
-    required String userId,
-  }) {
-    try {
-      return cartDatasource.fetchUserCart(userId: userId).map((event) {
-        final products = event.map(FirebaseCartItem.fromServer).toList();
-        return FirebaseCart(
-          userId: userId,
-          products: products,
-        );
-      });
+      final request = await cartDatasource.fetchUserCart(userId: userId);
+      final products = request.map(SupabaseCartItem.fromStorage).toList();
+      final cart = SupabaseCart(products: products);
+      return cart;
     } catch (e) {
       rethrow;
     }
@@ -83,5 +64,16 @@ class FirebaseCartRepository implements CartRepository {
     } catch (e) {
       rethrow;
     }
+  }
+
+  @override
+  Stream<Cart> listenToCart({
+    required String userId,
+  }) {
+    return cartDatasource.listenToCart(userId: userId).map((event) {
+      final products = event.map(SupabaseCartItem.fromStorage).toList();
+      final cart = SupabaseCart(products: products);
+      return cart;
+    });
   }
 }

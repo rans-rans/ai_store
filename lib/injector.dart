@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'src/features/cart/data/data_source/firebase_cart_datasource.dart';
-import 'src/features/cart/data/repository/firebase_cart_repository.dart';
+import 'src/features/cart/data/data_source/supabase_cart_datasource.dart';
+import 'src/features/cart/data/repository/supabase_cart_repository.dart';
 import 'src/features/cart/presentation/bloc/cart/cart_bloc.dart';
 import 'src/features/categories/data/datasource/supabase_category_datasource.dart';
 import 'src/features/categories/data/repositories/supabase_category_repository.dart';
@@ -25,6 +25,8 @@ class Injector extends StatelessWidget {
         SupabaseProductRepository(productsDataSource: SupabaseProductsDatasource());
     final supabaseCategoryRepository =
         SupabaseCategoryRepository(categoryDatasource: SupabaseCategoryDatasource());
+    final supabaseCartRepository =
+        SupabaseCartRepository(cartDatasource: SupabaseCartDatasource());
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -50,9 +52,7 @@ class Injector extends StatelessWidget {
               BrandBloc(categoryRepository: supabaseCategoryRepository),
         ),
         BlocProvider(
-          create: (context) => CartBloc(
-            FirebaseCartRepository(cartDatasource: FirebaseCartDatasource()),
-          ),
+          create: (context) => CartBloc(supabaseCartRepository),
         ),
       ],
       child: child,

@@ -5,20 +5,18 @@ abstract class CartRepository {
     required CartItem cartItem,
     required String userId,
   });
-  Stream<Cart> fetchUserCart({
+  Future<Cart> fetchUserCart({
     required String userId,
   });
   Future<void> removeProductFromCart({
     required String productId,
     required String userId,
   });
+  Future<void> changeProductQuantity({
+    required String productId,
+    required String userId,
+    required int quantity,
+  });
 
-  Future<void> incrementItemQuantity({
-    required String productId,
-    required String userId,
-  });
-  Future<void> decrementItemQuantity({
-    required String productId,
-    required String userId,
-  });
+  Stream<Cart> listenToCart({required String userId});
 }

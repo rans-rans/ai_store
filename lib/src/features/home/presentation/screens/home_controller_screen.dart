@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, ReadContext;
 
+import '../../../../constants/strings.dart';
 import '../../../cart/presentation/screens/cart_screen.dart';
 import '../../../categories/presentation/blocs/brand/brand_bloc.dart';
 import '../../../categories/presentation/blocs/category/category_bloc.dart';
@@ -50,19 +51,19 @@ class _HomeControllerScreenState extends State<HomeControllerScreen> {
             },
             destinations: const [
               NavigationDestination(
-                icon: Icon(Icons.home),
+                icon: ImageIcon(AssetImage(homeIcon)),
                 label: "Home",
               ),
               NavigationDestination(
-                icon: Icon(Icons.category_outlined),
+                icon: ImageIcon(AssetImage(categoriesIcon)),
                 label: "Categories",
               ),
               NavigationDestination(
-                icon: Icon(Icons.shopping_cart),
+                icon: ImageIcon(AssetImage(cartIcon)),
                 label: "Cart",
               ),
               NavigationDestination(
-                icon: Icon(Icons.person),
+                icon: ImageIcon(AssetImage(profileIcon)),
                 label: "Profile",
               ),
             ],

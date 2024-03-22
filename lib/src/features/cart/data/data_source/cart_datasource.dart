@@ -5,7 +5,7 @@ abstract class CartDatasource {
     required CartItem cartItem,
     required String userId,
   });
-  Stream<List<Map<String, dynamic>>> fetchUserCart({
+  Future<List<Map<String, dynamic>>> fetchUserCart({
     required String userId,
   });
   Future<void> removeProductFromCart({
@@ -13,12 +13,13 @@ abstract class CartDatasource {
     required String userId,
   });
 
-  Future<void> incrementItemQuantity({
+  Future<void> changeProductQuantity({
     required String productId,
     required String userId,
+    required int quantity,
   });
-  Future<void> decrementItemQuantity({
-    required String productId,
+
+  Stream<List<Map<String, dynamic>>> listenToCart({
     required String userId,
   });
 }

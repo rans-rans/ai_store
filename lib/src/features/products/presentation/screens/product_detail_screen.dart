@@ -6,7 +6,7 @@ import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/remove_from_cart_button.dart';
-import '../../../cart/domain/entities/firebase_cart.dart';
+import '../../../cart/domain/entities/supabase_cart.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../blocs/product/product_bloc.dart';
@@ -100,27 +100,30 @@ class ProductDetailScreen extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: BlocBuilder<CartBloc, CartState>(
           builder: (context, state) {
-            if (state is CartFetchSuccess &&
+            final itemExists = state is CartFetchSuccess &&
                 state.cart.products
-                    .any((product) => product.productId == this.product.id)) {
+                    .any((product) => product.productId == this.product.id);
+
+            if (itemExists) {
               final cartProduct = state.cart.products
                   .firstWhere((item) => item.productId == product.id);
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RemoveFromCartButton(id: product.id),
+                  RemoveFromCartButton(productId: product.id),
                   Row(
                     children: [
                       //the decrement button
                       IconButton(
-                        onPressed: () async {
-                          if (cartProduct.quantity == 1) return;
-                          context.read<CartBloc>().add(
-                                DecrementItemQuantity(
-                                  userId: dummyUserId,
-                                  productId: product.id,
-                                ),
-                              );
+                        onPressed: switch (cartProduct.quantity > 1) {
+                          false => null,
+                          true => () async {
+                              context.read<CartBloc>().changeItemQuantity(
+                                    quantity: cartProduct.quantity - 1,
+                                    productId: product.id,
+                                    userId: dummyUserId,
+                                  );
+                            }
                         },
                         icon: const Icon(Icons.remove),
                       ),
@@ -130,11 +133,10 @@ class ProductDetailScreen extends StatelessWidget {
                       //the increment button
                       IconButton(
                         onPressed: () async {
-                          context.read<CartBloc>().add(
-                                IncrementItemQuantity(
-                                  userId: dummyUserId,
-                                  productId: product.id,
-                                ),
+                          context.read<CartBloc>().changeItemQuantity(
+                                quantity: cartProduct.quantity + 1,
+                                productId: product.id,
+                                userId: dummyUserId,
                               );
                         },
                         icon: const Icon(Icons.add),
@@ -196,17 +198,17 @@ class ProductDetailScreen extends StatelessWidget {
                 //ADD TO CART button
                 ElevatedButton(
                   onPressed: () {
-                    context.read<CartBloc>().add(
-                          AddProductToCartEvent(
-                            cartItem: FirebaseCartItem(
-                              name: product.name,
-                              productId: product.id,
-                              quantity: 1,
-                              //TODO  use discount price rather
-                              price: product.price,
-                              image: product.images.first,
-                            ),
+                    context.read<CartBloc>().addProductToCart(
+                          userId: dummyUserId,
+                          cartItem: SupabaseCartItem(
+                            //TODO  change to dynamic user-id
                             userId: dummyUserId,
+                            quantity: 1,
+                            productId: product.id,
+                            productName: product.name,
+                            discount: product.discount,
+                            productPrice: product.price,
+                            imageUrl: product.images.first,
                           ),
                         );
                   },
