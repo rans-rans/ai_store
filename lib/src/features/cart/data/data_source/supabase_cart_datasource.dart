@@ -41,7 +41,6 @@ class SupabaseCartDatasource implements CartDatasource {
         'fetchusercart',
         params: {'p_user_id': userId},
       ) as List<dynamic>;
-      print('--------===========\n$response\n=========----------');
       return response.map((e) => e as Map<String, dynamic>).toList();
     } catch (e) {
       rethrow;

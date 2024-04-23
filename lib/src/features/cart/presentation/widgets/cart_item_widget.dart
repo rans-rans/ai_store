@@ -42,11 +42,10 @@ class CartItemWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              //TODO cart-item variant comes here
-              const Text(
-                "Size: Regular,color: grey",
+              Text(
+                cartItem.itemVariation,
                 maxLines: 1,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.grey,
                 ),
               ),

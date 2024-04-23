@@ -7,14 +7,23 @@ class SupabaseCart extends Cart {
 
   @override
   Map<String, dynamic> toServer() {
-    // TODO: implement toSerer
-    throw UnimplementedError();
+    final data = <String, dynamic>{};
+    for (var product in products) {
+      data['id'] = product.productId;
+      data['quantity'] = product.quantity;
+      data['name'] = product.productName;
+      data['variant'] = product.itemVariation;
+      data['price'] = product.productPrice;
+      data['discount'] = product.discount;
+    }
+    return data;
   }
 }
 
 class SupabaseCartItem extends CartItem {
   SupabaseCartItem({
     required super.quantity,
+    required super.itemVariation,
     required super.productId,
     required super.userId,
     required super.productName,
@@ -29,12 +38,14 @@ class SupabaseCartItem extends CartItem {
       'product_id': productId,
       'quantity': quantity,
       'user_id': userId,
+      'item_variant': itemVariation,
     };
   }
 
   factory SupabaseCartItem.fromStorage(Map<String, dynamic> data) {
     return SupabaseCartItem(
       discount: data['discount'],
+      itemVariation: data['item_variant'],
       quantity: data['quantity'],
       productId: data['product_id'],
       userId: data['user_id'],

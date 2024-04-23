@@ -8,7 +8,9 @@ import 'src/features/categories/data/datasource/supabase_category_datasource.dar
 import 'src/features/categories/data/repositories/supabase_category_repository.dart';
 import 'src/features/categories/presentation/blocs/brand/brand_bloc.dart';
 import 'src/features/categories/presentation/blocs/category/category_bloc.dart';
-import 'src/features/home/presentation/blocs/bottom_nav_cubit/bottom_navigation_cubit.dart';
+import 'src/features/checkout/data/datasource/paystack_datasource.dart';
+import 'src/features/checkout/data/repository/supabase_checkout_repository.dart';
+import 'src/features/checkout/presentation/blocs/cubit/checkout_cubit.dart';
 import 'src/features/products/data/data_source/supabase_products_datasource.dart';
 import 'src/features/products/data/repository/supabase_product_repository.dart';
 import 'src/features/products/presentation/blocs/product/product_bloc.dart';
@@ -27,10 +29,13 @@ class Injector extends StatelessWidget {
         SupabaseCategoryRepository(categoryDatasource: SupabaseCategoryDatasource());
     final supabaseCartRepository =
         SupabaseCartRepository(cartDatasource: SupabaseCartDatasource());
+    final checkoutRepository = SupabaseCheckoutRepository(
+      paymentDatasource: PaystackDatasource(),
+    );
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BottomNavigationCubit(),
+          create: (context) => CheckoutCubit(checkoutRepository: checkoutRepository),
         ),
         BlocProvider(
           create: (context) => CollectionsSegmentControl(),

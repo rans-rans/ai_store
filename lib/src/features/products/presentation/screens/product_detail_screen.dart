@@ -12,11 +12,17 @@ import '../../domain/entities/product.dart';
 import '../blocs/product/product_bloc.dart';
 import '../widgets/image_carousel.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
   final Product product;
 
   const ProductDetailScreen({super.key, required this.product});
 
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  String? itemVariation;
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
@@ -31,66 +37,6 @@ class ProductDetailScreen extends StatelessWidget {
             },
             icon: const Icon(Icons.share),
           ),
-          PopupMenuButton(
-            tooltip: "more",
-            offset: const Offset(0, 45),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(cardBorderRadius)),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: InkWell(
-                  onTap: () {
-                    //TODO add wishlist logic
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.star),
-                      Text("My Favorites"),
-                    ],
-                  ),
-                ),
-              ),
-              PopupMenuItem(
-                child: InkWell(
-                  onTap: () {
-                    //TODO add wishlist logic
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.download),
-                      Text("Save to wishlist"),
-                    ],
-                  ),
-                ),
-              ),
-              PopupMenuItem(
-                child: InkWell(
-                  onTap: () {
-                    //TODO add watch logic
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.visibility),
-                      Text("Watch this item"),
-                    ],
-                  ),
-                ),
-              ),
-              PopupMenuItem(
-                child: InkWell(
-                  onTap: () {
-                    //TODO add report logic
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.report),
-                      Text("Report"),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
       bottomSheet: Container(
@@ -102,15 +48,15 @@ class ProductDetailScreen extends StatelessWidget {
           builder: (context, state) {
             final itemExists = state is CartFetchSuccess &&
                 state.cart.products
-                    .any((product) => product.productId == this.product.id);
+                    .any((product) => product.productId == widget.product.id);
 
             if (itemExists) {
               final cartProduct = state.cart.products
-                  .firstWhere((item) => item.productId == product.id);
+                  .firstWhere((item) => item.productId == widget.product.id);
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RemoveFromCartButton(productId: product.id),
+                  RemoveFromCartButton(productId: widget.product.id),
                   Row(
                     children: [
                       //the decrement button
@@ -120,7 +66,7 @@ class ProductDetailScreen extends StatelessWidget {
                           true => () async {
                               context.read<CartBloc>().changeItemQuantity(
                                     quantity: cartProduct.quantity - 1,
-                                    productId: product.id,
+                                    productId: widget.product.id,
                                     userId: dummyUserId,
                                   );
                             }
@@ -135,7 +81,7 @@ class ProductDetailScreen extends StatelessWidget {
                         onPressed: () async {
                           context.read<CartBloc>().changeItemQuantity(
                                 quantity: cartProduct.quantity + 1,
-                                productId: product.id,
+                                productId: widget.product.id,
                                 userId: dummyUserId,
                               );
                         },
@@ -153,12 +99,12 @@ class ProductDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (product.discount > 0)
+                    if (widget.product.discount > 0)
                       Row(
                         children: [
                           //original price comes here
                           Text(
-                            HelperFunctions.formatToCurrency(product.price),
+                            HelperFunctions.formatToCurrency(widget.product.price),
                             style: const TextStyle(
                               decoration: TextDecoration.lineThrough,
                               // color: Colors.grey,
@@ -175,17 +121,18 @@ class ProductDetailScreen extends StatelessWidget {
                                 vertical: 2,
                                 horizontal: 5,
                               ),
-                              child: Text("${product.discount}%"),
+                              child: Text("${widget.product.discount}%"),
                             ),
                           ),
                         ],
                       ),
                     //discount price comes here
                     Text(
-                      switch (product.discount > 0) {
+                      switch (widget.product.discount > 0) {
                         true => HelperFunctions.getDiscountAmount(
-                            product.price, product.discount),
-                        false => HelperFunctions.formatToCurrency(product.price),
+                            widget.product.price, widget.product.discount),
+                        false =>
+                          HelperFunctions.formatToCurrency(widget.product.price),
                       },
                       style: const TextStyle(
                         fontWeight: mediumFontWeight,
@@ -198,17 +145,23 @@ class ProductDetailScreen extends StatelessWidget {
                 //ADD TO CART button
                 ElevatedButton(
                   onPressed: () {
+                    if (itemVariation == null) {
+                      HelperFunctions.snackShow(
+                          context, "Please select item-variant");
+                      return;
+                    }
                     context.read<CartBloc>().addProductToCart(
                           userId: dummyUserId,
                           cartItem: SupabaseCartItem(
                             //TODO  change to dynamic user-id
+                            itemVariation: itemVariation!,
                             userId: dummyUserId,
                             quantity: 1,
-                            productId: product.id,
-                            productName: product.name,
-                            discount: product.discount,
-                            productPrice: product.price,
-                            imageUrl: product.images.first,
+                            productId: widget.product.id,
+                            productName: widget.product.name,
+                            discount: widget.product.discount,
+                            productPrice: widget.product.price,
+                            imageUrl: widget.product.images.first,
                           ),
                         );
                   },
@@ -233,14 +186,14 @@ class ProductDetailScreen extends StatelessWidget {
             Stack(
               alignment: Alignment.bottomRight,
               children: [
-                ImageCarousel(imagePaths: product.images),
+                ImageCarousel(imagePaths: widget.product.images),
                 Positioned(
                   right: screenSize.width * 0.05,
                   child: StreamBuilder(
                       stream: context.read<ProductBloc>().listenToFavoriteStatus(
                             //TODO user-id comes here
                             userId: dummyUserId,
-                            productId: product.id,
+                            productId: widget.product.id,
                           ),
                       builder: (context, snapshot) {
                         final isFavorite = snapshot.data ?? false;
@@ -252,7 +205,7 @@ class ProductDetailScreen extends StatelessWidget {
                             onPressed: () {
                               context.read<ProductBloc>().add(
                                     ToggleProductFavorite(
-                                      productId: product.id,
+                                      productId: widget.product.id,
                                       //TODO user-id comes here
                                       userId: dummyUserId,
                                       value: !isFavorite,
@@ -282,7 +235,7 @@ class ProductDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name,
+                    widget.product.name,
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
                     maxLines: 4,
@@ -294,7 +247,7 @@ class ProductDetailScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ReadMoreText(
-                      product.description,
+                      widget.product.description,
                       trimLines: 2,
                       colorClickableText: Colors.pink,
                       trimMode: TrimMode.Line,
@@ -337,10 +290,10 @@ class ProductDetailScreen extends StatelessWidget {
                       label: const Text("Select variant"),
                       width: MediaQuery.sizeOf(context).width * 0.8,
                       onSelected: (value) {
-                        //TODO selected variant logic
+                        itemVariation = value;
                       },
                       dropdownMenuEntries: [
-                        ...product.variants.map(
+                        ...widget.product.variants.map(
                           (variant) => DropdownMenuEntry(
                             value: variant,
                             label: variant,
@@ -369,17 +322,17 @@ class ProductDetailScreen extends StatelessWidget {
                           Text("New"),
                         ],
                       ),
-                      const TableRow(
+                      TableRow(
                         children: [
-                          Text("Quanntity status"),
-                          Text("Plenty"),
+                          const Text("Quanntity status"),
+                          Text("${widget.product.quantity}"),
                         ],
                       ),
                       TableRow(
                         children: [
                           const Text("Brand"),
                           Text(
-                            product.brand,
+                            widget.product.brand,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

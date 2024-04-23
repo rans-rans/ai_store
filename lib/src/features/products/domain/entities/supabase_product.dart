@@ -15,19 +15,20 @@ class SupabaseProduct extends Product {
   });
 
   factory SupabaseProduct.fromStorage(Map<String, dynamic> data) {
+    final brandName = (data['brand_name'] as List).first;
     try {
       List<dynamic> variants = data['variations'];
       variants = variants.toSet().toList();
       return SupabaseProduct(
         name: data['name'],
-        brand: data['brand_id'],
+        brand: brandName,
         quantity: data['quantity'],
         id: data['product_id'],
         variants: variants,
         category: data['category_id'],
         description: data['description'],
         discount: (data['discount'] / 1.0),
-        images: data['image_urls'] ?? [],
+        images: data['images'] ?? [],
         price: (data['price'] / 1.0),
       );
     } catch (e) {
