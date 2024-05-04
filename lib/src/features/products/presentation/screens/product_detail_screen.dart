@@ -1,12 +1,11 @@
+import 'package:ai_store/src/features/cart/domain/entities/express_cart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:readmore/readmore.dart';
 
-import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/remove_from_cart_button.dart';
-import '../../../cart/domain/entities/supabase_cart.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../blocs/product/product_bloc.dart';
@@ -23,6 +22,17 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String? itemVariation;
+
+  late bool isFavorite;
+
+  bool favoriteLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavorite = widget.product.favorite;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
@@ -46,6 +56,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         padding: const EdgeInsets.all(8),
         child: BlocBuilder<CartBloc, CartState>(
           builder: (context, state) {
+            if (state is CartFetchLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
             final itemExists = state is CartFetchSuccess &&
                 state.cart.products
                     .any((product) => product.productId == widget.product.id);
@@ -64,10 +79,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         onPressed: switch (cartProduct.quantity > 1) {
                           false => null,
                           true => () async {
-                              context.read<CartBloc>().changeItemQuantity(
-                                    quantity: cartProduct.quantity - 1,
-                                    productId: widget.product.id,
-                                    userId: dummyUserId,
+                              //TODO  use dynamic ID
+                              context.read<CartBloc>().add(
+                                    ChangeItemQuantityEvent(
+                                      userId: 3,
+                                      quantity: cartProduct.quantity - 1,
+                                      productId: widget.product.id,
+                                    ),
                                   );
                             }
                         },
@@ -79,10 +97,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       //the increment button
                       IconButton(
                         onPressed: () async {
-                          context.read<CartBloc>().changeItemQuantity(
-                                quantity: cartProduct.quantity + 1,
-                                productId: widget.product.id,
-                                userId: dummyUserId,
+                          context.read<CartBloc>().add(
+                                ChangeItemQuantityEvent(
+                                  userId: 3,
+                                  quantity: cartProduct.quantity + 1,
+                                  productId: widget.product.id,
+                                ),
                               );
                         },
                         icon: const Icon(Icons.add),
@@ -144,26 +164,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                 //ADD TO CART button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (itemVariation == null) {
                       HelperFunctions.snackShow(
                           context, "Please select item-variant");
                       return;
                     }
-                    context.read<CartBloc>().addProductToCart(
-                          userId: dummyUserId,
-                          cartItem: SupabaseCartItem(
-                            //TODO  change to dynamic user-id
-                            itemVariation: itemVariation!,
-                            userId: dummyUserId,
-                            quantity: 1,
-                            productId: widget.product.id,
-                            productName: widget.product.name,
-                            discount: widget.product.discount,
-                            productPrice: widget.product.price,
-                            imageUrl: widget.product.images.first,
-                          ),
-                        );
+
+                    context.read<CartBloc>().add(AddProductToCartEvent(
+                          cartItem: ExpressCartItem(
+                              quantity: 1,
+                              productId: widget.product.id,
+                              itemVariation: itemVariation!,
+                              userId: 3,
+                              discount: widget.product.discount,
+                              productName: widget.product.name,
+                              productPrice: widget.product.price,
+                              imageUrl: widget.product.images.first),
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
@@ -189,42 +207,47 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ImageCarousel(imagePaths: widget.product.images),
                 Positioned(
                   right: screenSize.width * 0.05,
-                  child: StreamBuilder(
-                      stream: context.read<ProductBloc>().listenToFavoriteStatus(
-                            //TODO user-id comes here
-                            userId: dummyUserId,
-                            productId: widget.product.id,
-                          ),
-                      builder: (context, snapshot) {
-                        final isFavorite = snapshot.data ?? false;
-
-                        return CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.white30,
-                          child: IconButton(
-                            onPressed: () {
-                              context.read<ProductBloc>().add(
-                                    ToggleProductFavorite(
-                                      productId: widget.product.id,
-                                      //TODO user-id comes here
-                                      userId: dummyUserId,
-                                      value: !isFavorite,
-                                    ),
-                                  );
-                            },
-                            icon: Icon(
-                                switch (isFavorite) {
-                                  true => Icons.favorite,
-                                  false => Icons.favorite_border,
+                  child: StatefulBuilder(
+                    builder: (context, snap) {
+                      return CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.white30,
+                        child: favoriteLoading
+                            ? const CircularProgressIndicator()
+                            : IconButton(
+                                onPressed: () async {
+                                  snap(() {
+                                    favoriteLoading = true;
+                                  });
+                                  try {
+                                    final fav = await context
+                                        .read<ProductBloc>()
+                                        .toggleFavorite(
+                                          userId: 3,
+                                          productId: widget.product.id,
+                                        );
+                                    isFavorite = fav;
+                                  } finally {
+                                    snap(() {
+                                      favoriteLoading = false;
+                                    });
+                                  }
                                 },
-                                size: 40,
-                                color: switch (isFavorite) {
-                                  true => Theme.of(context).primaryColor,
-                                  false => Theme.of(context).colorScheme.secondary,
-                                }),
-                          ),
-                        );
-                      }),
+                                icon: Icon(
+                                  switch (isFavorite) {
+                                    true => Icons.favorite,
+                                    false => Icons.favorite_border,
+                                  },
+                                  size: 40,
+                                  color: switch (isFavorite) {
+                                    true => Theme.of(context).primaryColor,
+                                    false => Theme.of(context).colorScheme.secondary,
+                                  },
+                                ),
+                              ),
+                      );
+                    },
+                  ),
                 )
               ],
             ),

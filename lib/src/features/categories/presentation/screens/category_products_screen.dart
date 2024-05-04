@@ -20,7 +20,9 @@ class CategoryProductsScreen extends StatelessWidget {
         title: Text(category.name),
       ),
       body: FutureBuilder(
-          future: context.read<ProductsBloc>().fetchProductsByCategory(category.id),
+          //TODO  change  to  dynamic user-id
+          future:
+              context.read<ProductsBloc>().fetchProductsByCategory(category.id, 3),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

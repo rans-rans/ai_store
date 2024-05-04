@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../orders/domain/entities/order.dart';
-import '../../../domain/entities/metadata.dart';
 import '../../../domain/repositories/checkout_repository.dart';
 
 part 'checkout_state.dart';
@@ -11,11 +10,10 @@ class CheckoutCubit extends Cubit<bool> {
 
   Future<Map<String, dynamic>> initializePayment({
     required Order cart,
-    required Metadata metadata,
+    required String email,
   }) async {
     try {
-      return await checkoutRepository.initializePayment(
-          metadata: metadata, cart: cart);
+      return await checkoutRepository.initializePayment(email: email, cart: cart);
     } catch (e) {
       rethrow;
     }

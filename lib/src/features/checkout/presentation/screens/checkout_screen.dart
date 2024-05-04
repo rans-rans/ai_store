@@ -6,9 +6,8 @@ import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../cart/domain/entities/cart.dart';
+import '../../../orders/domain/entities/express_order.dart';
 import '../../../orders/domain/entities/order.dart';
-import '../../../orders/domain/entities/supabase_order.dart';
-import '../../domain/entities/metadata.dart';
 import '../blocs/cubit/checkout_cubit.dart';
 import '../widgets/checkout_item_widget.dart';
 
@@ -147,25 +146,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   onPressed: () async {
                     try {
-                      final cartData =
-                          widget.cart.products.map((e) => e.toServer()).toList();
-                      //TODO use dynamic values
-                      final metaData = Metadata(
-                        userId: dummyUserId,
-                        customerName: 'Ransford Owusu-Ansah',
-                        phone: '0559529436',
-                        cartData: cartData,
-                        email: 'ransfordowusuansah9@gmail.com',
-                      );
                       //TODO handle payment sucess and failure
                       if (selectedLocation.value == null) {
                         HelperFunctions.snackShow(
                             context, "Please select a location");
                         return;
                       }
-                      order = SupabaseOrder(
-                        orderId: DateTime.now().toString(),
-                        userId: dummyUserId,
+                      order = ExpressOrder(
+                        orderId: 1,
+                        userId: 3,
                         deliveryLocation: selectedLocation.value!,
                         orderDate: DateTime.now(),
                         cart: widget.cart,
@@ -173,7 +162,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       final initializedResponse =
                           await context.read<CheckoutCubit>().initializePayment(
                                 cart: order!,
-                                metadata: metaData,
+                                //TODO  put user  email here
+                                email: 'rans@test.com',
                               );
 
                       print('initialized  response  is  $initializedResponse');

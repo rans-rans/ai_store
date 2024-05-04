@@ -9,77 +9,78 @@ part 'cart_state.dart';
 class CartBloc extends Bloc<CartEvent, CartState> {
   final CartRepository cartRepository;
 
-  Future<void> addProductToCart({
-    required CartItem cartItem,
-    required String userId,
-  }) async {
-    try {
-      return await cartRepository.addProductToCart(
-        cartItem: cartItem,
-        userId: userId,
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
+  late Cart _cart;
 
-  Future<void> removeProductFromCart({
-    required String productId,
-    required String userId,
+  Cart get cart => _cart;
+
+  Future<Map<String, dynamic>> removeProductFromCart({
+    required int productId,
+    required int userId,
   }) async {
     try {
-      return await cartRepository.removeProductFromCart(
+      final response = await cartRepository.removeProductFromCart(
         productId: productId,
         userId: userId,
       );
+      add(GetUserCart(userId: userId));
+      return response;
     } catch (e) {
       rethrow;
     }
-  }
-
-  Future<void> changeItemQuantity({
-    required int quantity,
-    required String productId,
-    required String userId,
-  }) async {
-    try {
-      return await cartRepository
-          .changeProductQuantity(
-        quantity: quantity,
-        productId: productId,
-        userId: userId,
-      )
-          .then((value) {
-        add(
-          ChangeItemQuantityEvent(
-            userId: userId,
-            quantity: quantity,
-            productId: productId,
-          ),
-        );
-      });
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Stream<Cart> listenToCart({required String userId}) {
-    return cartRepository.listenToCart(userId: userId)
-      ..listen((event) {
-        add(UpdateUserCartEvent(cart: event));
-      });
   }
 
   CartBloc(this.cartRepository) : super(CartInitial()) {
-    on<UpdateUserCartEvent>((event, emit) async {
+    on<GetUserCart>((event, emit) async {
       try {
-        emit(CartFetchSuccess(cart: event.cart));
+        emit(CartFetchLoading());
+        final response = await cartRepository.fetchUserCart(userId: event.userId);
+
+        _cart = response;
+        emit(CartFetchSuccess(cart: response));
+      } catch (e) {
+        emit(CartFetchFailed(message: e.toString()));
+      }
+    });
+    //TODO  use a better  approach
+    on<ChangeItemQuantityEvent>((event, emit) async {
+      try {
+        final productIndex = _cart.products
+            .indexWhere((element) => element.productId == event.productId);
+        await cartRepository.changeProductQuantity(
+          productId: event.productId,
+          userId: event.userId,
+          quantity: event.quantity,
+        );
+        _cart.products[productIndex].quantity = event.quantity;
+
+        emit(
+          CartFetchSuccess(
+            cart: _cart,
+          ),
+        );
+      } catch (e) {
+        emit(CartFetchFailed(message: e.toString()));
+      }
+    });
+
+    on<AddProductToCartEvent>((event, emit) async {
+      try {
+        final item = event.cartItem;
+        final response = await cartRepository.addProductToCart(cartItem: {
+          'product_id': item.productId,
+          //TODO  use dynamic id
+          'user_id': item.userId,
+          'quantity': 1,
+          'variant': item.itemVariation,
+        });
+        if (response['status'] == 'failed') {
+          emit(CartFetchFailed(message: response['message']));
+        }
+        _cart.products.add(item);
+        emit(CartFetchSuccess(cart: _cart));
       } catch (e) {
         rethrow;
       }
-    });
-    on<ChangeItemQuantityEvent>((event, emit) {
-      //do nothing
     });
   }
 }

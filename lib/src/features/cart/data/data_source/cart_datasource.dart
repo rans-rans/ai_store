@@ -1,25 +1,22 @@
-import '../../domain/entities/cart.dart';
-
 abstract class CartDatasource {
-  Future<void> addProductToCart({
-    required CartItem cartItem,
-    required String userId,
+  Future<Map<String, dynamic>> addProductToCart({
+    required Map<String, dynamic> cartItem,
   });
   Future<List<Map<String, dynamic>>> fetchUserCart({
-    required String userId,
+    required int userId,
   });
-  Future<void> removeProductFromCart({
-    required String productId,
-    required String userId,
+  Future<Map<String, dynamic>> removeProductFromCart({
+    required int productId,
+    required int userId,
   });
 
-  Future<void> changeProductQuantity({
-    required String productId,
-    required String userId,
+  Future<Map<String, dynamic>> changeProductQuantity({
+    required int productId,
+    required int userId,
     required int quantity,
   });
 
   Stream<List<Map<String, dynamic>>> listenToCart({
-    required String userId,
+    required int userId,
   });
 }

@@ -1,22 +1,21 @@
 import '../entities/cart.dart';
 
 abstract class CartRepository {
-  Future<void> addProductToCart({
-    required CartItem cartItem,
-    required String userId,
+  Future<Map<String, dynamic>> addProductToCart({
+    required Map<String, dynamic> cartItem,
   });
   Future<Cart> fetchUserCart({
-    required String userId,
+    required int userId,
   });
-  Future<void> removeProductFromCart({
-    required String productId,
-    required String userId,
+  Future<Map<String, dynamic>> removeProductFromCart({
+    required int productId,
+    required int userId,
   });
-  Future<void> changeProductQuantity({
-    required String productId,
-    required String userId,
+  Future<Map<String, dynamic>> changeProductQuantity({
+    required int productId,
+    required int userId,
     required int quantity,
   });
 
-  Stream<Cart> listenToCart({required String userId});
+  Stream<Cart> listenToCart({required int userId});
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../constants/api_constants.dart';
 import '../features/cart/presentation/bloc/cart/cart_bloc.dart';
 
 class RemoveFromCartButton extends StatelessWidget {
@@ -10,15 +9,16 @@ class RemoveFromCartButton extends StatelessWidget {
     required this.productId,
   });
 
-  final String productId;
+  final int productId;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
+        //TODO change to  dynamic id
         context.read<CartBloc>().removeProductFromCart(
               productId: productId,
-              userId: dummyUserId,
+              userId: 3,
             );
       },
       child: Text(

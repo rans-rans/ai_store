@@ -9,7 +9,7 @@ import 'categories_just_for_you_widget.dart';
 import '../../../home/presentation/widgets/product_card_widget.dart';
 
 class CategoriesList extends StatelessWidget {
-  final String categoryId;
+  final int categoryId;
   const CategoriesList({required this.categoryId, super.key});
 
   @override
@@ -53,7 +53,9 @@ class CategoriesList extends StatelessWidget {
           ),
           const SizedBox(height: mediumSpacing * 3),
           FutureBuilder(
-            future: context.read<ProductsBloc>().fetchProductsByCategory(categoryId),
+            //TODO  change  user-id
+            future:
+                context.read<ProductsBloc>().fetchProductsByCategory(categoryId, 3),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: Text('Loading'));

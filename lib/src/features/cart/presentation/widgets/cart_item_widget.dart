@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/online_image.dart';
@@ -55,10 +54,12 @@ class CartItemWidget extends StatelessWidget {
                     onPressed: switch (cartItem.quantity <= 1) {
                       true => null,
                       false => () {
-                          context.read<CartBloc>().changeItemQuantity(
-                                quantity: cartItem.quantity - 1,
-                                productId: cartItem.productId,
-                                userId: dummyUserId,
+                          context.read<CartBloc>().add(
+                                ChangeItemQuantityEvent(
+                                  userId: 3,
+                                  quantity: cartItem.quantity - 1,
+                                  productId: cartItem.productId,
+                                ),
                               );
                         },
                     },
@@ -68,10 +69,12 @@ class CartItemWidget extends StatelessWidget {
                   Text(cartItem.quantity.toString()),
                   IconButton(
                     onPressed: () {
-                      context.read<CartBloc>().changeItemQuantity(
-                            quantity: cartItem.quantity + 1,
-                            productId: cartItem.productId,
-                            userId: dummyUserId,
+                      context.read<CartBloc>().add(
+                            ChangeItemQuantityEvent(
+                              userId: 3,
+                              quantity: cartItem.quantity + 1,
+                              productId: cartItem.productId,
+                            ),
                           );
                     },
                     icon: const Icon(Icons.add),

@@ -6,24 +6,23 @@ part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final ProductRepository _productRepository;
+  final ProductRepository productRepository;
 
-  Stream<bool> listenToFavoriteStatus({
-    required String userId,
-    required String productId,
-  }) {
-    return _productRepository.listenToFavoriteStatus(
-      productId: productId,
-      userId: userId,
-    );
-  }
-
-  ProductBloc(this._productRepository) : super(ProductInitial()) {
-    on<ToggleProductFavorite>((event, emit) {
-      _productRepository.toggleFavorite(
-        productId: event.productId,
-        userId: event.userId,
+  Future<bool> toggleFavorite({
+    required int userId,
+    required int productId,
+  }) async {
+    try {
+      final request = await productRepository.toggleFavorite(
+        productId: productId,
+        userId: userId,
       );
-    });
+      final response = request['message']['is_favorite'];
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
+
+  ProductBloc(this.productRepository) : super(ProductInitial());
 }

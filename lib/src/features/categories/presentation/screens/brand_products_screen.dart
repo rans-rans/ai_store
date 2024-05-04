@@ -21,7 +21,8 @@ class BrandProductsScreen extends StatelessWidget {
         title: Text(brand.name),
       ),
       body: FutureBuilder(
-          future: context.read<ProductsBloc>().fetchProductsByBrand(brand.id),
+          //TODO  change  to  dynamic
+          future: context.read<ProductsBloc>().fetchProductsByBrand(brand.id, 3),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

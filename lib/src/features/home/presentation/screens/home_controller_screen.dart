@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 
 import '../../../../constants/strings.dart';
+import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../../cart/presentation/screens/cart_screen.dart';
 import '../../../categories/presentation/blocs/brand/brand_bloc.dart';
 import '../../../categories/presentation/blocs/category/category_bloc.dart';
@@ -22,9 +23,11 @@ class _HomeControllerScreenState extends State<HomeControllerScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductsBloc>().add(FetchProducts());
+    context.read<ProductsBloc>().add(FetchProducts(userId: 3));
     context.read<CategoryBloc>().add(FetchAllCategories());
     context.read<BrandBloc>().add(FetchAllBrandsEvent());
+    //TODO  use dynamic user
+    context.read<CartBloc>().add(GetUserCart(userId: 3));
   }
 
   @override

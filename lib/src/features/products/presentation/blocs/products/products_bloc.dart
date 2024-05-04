@@ -9,20 +9,26 @@ part 'products_state.dart';
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   final ProductsRepository _productsRepository;
 
-  Future<List<Product>> fetchProductsByBrand(String brandName) async {
+  Future<List<Product>> fetchProductsByBrand(
+    int brandId,
+    int userId,
+  ) async {
     try {
-      final response =
-          await _productsRepository.fetchProductsByBrand(brandID: brandName);
+      final response = await _productsRepository.fetchProductsByBrand(
+          brandID: brandId, userId: userId);
       return response;
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<Product>> fetchProductsByCategory(String categoryId) async {
+  Future<List<Product>> fetchProductsByCategory(
+    int categoryId,
+    int userId,
+  ) async {
     try {
-      final response =
-          await _productsRepository.fetchProductsByCategory(categoryId: categoryId);
+      final response = await _productsRepository.fetchProductsByCategory(
+          categoryId: categoryId, userId: userId);
       return response;
     } catch (e) {
       rethrow;
@@ -34,7 +40,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       emit(ProductsLoading());
       try {
         final products = await _productsRepository
-            .fetchProducts()
+            .fetchProducts(event.userId)
             .timeout(const Duration(seconds: 7));
         emit(ProductsSuccess(products: products));
       } catch (e) {

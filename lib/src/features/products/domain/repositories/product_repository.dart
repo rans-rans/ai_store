@@ -1,15 +1,23 @@
+import '../../data/data_source/products_datasource.dart';
+
 abstract class ProductRepository {
-  Future<void> saveProduct(String productId);
-  Future<void> toggleFavorite({
-    required String productId,
-    required String userId,
+  Future<Map<String, dynamic>> saveProduct({
+    required int userId,
+    required int productId,
+  });
+  Future<Map<String, dynamic>> toggleFavorite({
+    required int productId,
+    required int userId,
   });
 
-  Future<void> rateProduct(String productId);
-  Future<void> removeSavedProduct(String productId);
+  Future<Map<String, dynamic>> rateProduct(Rating rating);
+  Future<Map<String, dynamic>> removeSavedProduct({
+    required int userId,
+    required int productId,
+  });
 
   Stream<bool> listenToFavoriteStatus({
-    required String productId,
-    required String userId,
+    required int productId,
+    required int userId,
   });
 }

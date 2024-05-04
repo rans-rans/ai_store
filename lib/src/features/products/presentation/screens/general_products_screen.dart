@@ -24,7 +24,7 @@ class GeneralProductsScreen extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     return RefreshIndicator.adaptive(
       onRefresh: () async {
-        context.read<ProductsBloc>().add(FetchProducts());
+        context.read<ProductsBloc>().add(FetchProducts(userId: 3));
       },
       child: Scaffold(
         appBar: AppBar(

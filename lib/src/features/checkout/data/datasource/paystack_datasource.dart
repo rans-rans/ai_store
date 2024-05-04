@@ -5,14 +5,13 @@ import 'package:flutter_paystack_max/flutter_paystack_max.dart';
 import '../../../../constants/api_constants.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../orders/domain/entities/order.dart';
-import '../../domain/entities/metadata.dart';
 import 'payment_datasource.dart';
 
 class PaystackDatasource implements PaymentDatasource {
   @override
   Future<Map<String, dynamic>> initializePayment({
-    required Metadata metadata,
     required Order order,
+    required String email,
   }) async {
     try {
       final amount = await HelperFunctions.getCartTotalPrice(order.cart.products);
@@ -24,9 +23,9 @@ class PaystackDatasource implements PaymentDatasource {
       final request = PaystackTransactionRequest(
         reference: reference,
         secretKey: secrectKey,
-        email: metadata.email,
+        email: email,
         amount: (amount * 100).ceilToDouble(),
-        metadata: json.encode(metadata.toMap()),
+        metadata: json.encode(order.toServer(amount)),
         currency: PaystackCurrency.ghs,
         channel: [PaystackPaymentChannel.mobileMoney],
       );
