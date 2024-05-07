@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/numbers.dart'
     show
@@ -7,6 +8,7 @@ import '../../../../constants/numbers.dart'
         mediumFontWeight,
         mediumSpacing,
         smallSpacing;
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -83,7 +85,14 @@ class SettingsScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 child: InkWell(
                   onTap: () {
-                    //TODO handle sign-out here
+                    //TODO add confirmation box
+                    final user = context.read<AuthBloc>().user;
+                    context.read<AuthBloc>().add(
+                          LogoutEvent(
+                            userId: user!.userId,
+                            token: user.authToken,
+                          ),
+                        );
                   },
                   child: const Text(
                     "SIGN OUT",

@@ -1,31 +1,31 @@
 abstract class ProductsDataSource {
-  Future<List<Map<String, dynamic>>> fetchGeneralProducts(int userId);
+  Future<List<Map<String, dynamic>>> fetchGeneralProducts(int userId, String token);
   Future<List<Map<String, dynamic>>> fetchProductsByBrand({
     required int brandID,
     required int userId,
+    required String token,
   });
   Future<List<Map<String, dynamic>>> fetchProductsBycategory({
     required int categoryId,
     required int userId,
+    required String token,
   });
 
   Future<Map<String, dynamic>> saveProduct({
     required int userId,
     required int productId,
+    required String token,
   });
   Future<Map<String, dynamic>> toggleFavorite({
     required int productId,
     required int userId,
+    required String token,
   });
-  Future<Map<String, dynamic>> rateProduct(Rating rating);
+  Future<Map<String, dynamic>> rateProduct(Rating rating, String token);
   Future<Map<String, dynamic>> removeSavedProduct({
     required int userId,
     required int productId,
-  });
-
-  Stream<bool> listenToFavoriteStatus({
-    required int productId,
-    required int userId,
+    required String token,
   });
 }
 
@@ -47,7 +47,7 @@ class Rating {
   Map<String, dynamic> toMap() {
     return {
       'product_id': productId,
-      'user_id': userId,
+      'id': userId,
       'score': score,
       'comment': comment,
       'date_created': dateCreated

@@ -1,17 +1,29 @@
 import 'package:ai_store/src/widgets/wide_button_widget.dart';
-import 'package:flutter/material.dart'
-    show Colors, Icons, Scaffold, TextButton, Theme;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../../constants/numbers.dart'
     show defaultPadding, largeFontSize, mediumFontSize, mediumFontWeight;
 import '../../../constants/strings.dart' show onboardingBackgroundImage;
+import '../../auth/presentation/screens/auth_screen.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  @override
   Widget build(BuildContext context) {
+    void gotoAuthenticate() {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const AuthScreen(),
+          ));
+    }
+
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       body: Container(
@@ -101,7 +113,7 @@ class OnboardingScreen extends StatelessWidget {
                   ),
                   WideButtonWidget(
                     text: "SIGN UP",
-                    onPressed: () {},
+                    onPressed: gotoAuthenticate,
                     color: Colors.black,
                   ),
                   Row(
@@ -115,7 +127,7 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: gotoAuthenticate,
                         child: Text(
                           "Login",
                           style: TextStyle(color: Theme.of(context).primaryColor),

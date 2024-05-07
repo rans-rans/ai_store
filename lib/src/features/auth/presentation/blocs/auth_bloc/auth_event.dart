@@ -23,4 +23,8 @@ final class LogoutEvent extends AuthEvent {
   LogoutEvent({required this.userId, required this.token});
 }
 
-final class FetchUser extends AuthEvent {}
+final class FetchUser extends AuthEvent {
+  final AuthUser user;
+
+  FetchUser(this.user);
+}

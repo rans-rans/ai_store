@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/online_image.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../products/presentation/blocs/products/products_bloc.dart';
 import '../../../products/presentation/screens/product_detail_screen.dart';
 import '../../domain/entities/category.dart';
@@ -15,14 +16,14 @@ class CategoryProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AuthBloc>().state as AuthAvailable;
     return Scaffold(
       appBar: AppBar(
         title: Text(category.name),
       ),
       body: FutureBuilder(
-          //TODO  change  to  dynamic user-id
-          future:
-              context.read<ProductsBloc>().fetchProductsByCategory(category.id, 3),
+          future: context.read<ProductsBloc>().fetchProductsByCategory(
+              category.id, user.authUser.userId, user.authUser.authToken),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

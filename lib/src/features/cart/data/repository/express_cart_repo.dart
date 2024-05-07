@@ -10,10 +10,12 @@ class ExpressCartRepo implements CartRepository {
   @override
   Future<Map<String, dynamic>> addProductToCart({
     required Map<String, dynamic> cartItem,
+    required String token,
   }) async {
     try {
       return await datasource.addProductToCart(
         cartItem: cartItem,
+        token: token,
       );
     } catch (e) {
       rethrow;
@@ -21,13 +23,18 @@ class ExpressCartRepo implements CartRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> changeProductQuantity(
-      {required int productId, required int userId, required int quantity}) async {
+  Future<Map<String, dynamic>> changeProductQuantity({
+    required int productId,
+    required int userId,
+    required int quantity,
+    required String token,
+  }) async {
     try {
       return await datasource.changeProductQuantity(
         productId: productId,
         userId: userId,
         quantity: quantity,
+        token: token,
       );
     } catch (e) {
       rethrow;
@@ -35,9 +42,15 @@ class ExpressCartRepo implements CartRepository {
   }
 
   @override
-  Future<Cart> fetchUserCart({required int userId}) async {
+  Future<Cart> fetchUserCart({
+    required int userId,
+    required String token,
+  }) async {
     try {
-      final request = await datasource.fetchUserCart(userId: userId);
+      final request = await datasource.fetchUserCart(
+        userId: userId,
+        token: token,
+      );
       final response = request.map(ExpressCartItem.fromServer).toList();
       return ExpressCart(products: response);
     } catch (e) {
@@ -46,20 +59,16 @@ class ExpressCartRepo implements CartRepository {
   }
 
   @override
-  Stream<Cart> listenToCart({required int userId}) {
-    // TODO: implement listenToCart
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Map<String, dynamic>> removeProductFromCart({
     required int productId,
     required int userId,
+    required String token,
   }) async {
     try {
       return await datasource.removeProductFromCart(
         productId: productId,
         userId: userId,
+        token: token,
       );
     } catch (e) {
       rethrow;

@@ -12,7 +12,7 @@ class BrandBloc extends Bloc<BrandEvent, BrandState> {
     on<FetchAllBrandsEvent>((event, emit) async {
       emit(BrandsFetchLoading());
       try {
-        final response = await categoryRepository.fetchAllBrands();
+        final response = await categoryRepository.fetchAllBrands(event.token);
         emit(BrandsFetchSuccess(brands: response));
       } catch (e) {
         emit(BrandsFetchFailed());

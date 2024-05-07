@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../checkout/presentation/screens/checkout_screen.dart';
 
 import '../bloc/cart/cart_bloc.dart';
@@ -36,9 +37,12 @@ class _CartScreenState extends State<CartScreen> {
                       ElevatedButton(
                         child: const Text('Retry'),
                         onPressed: () {
-                          //TODO  use dynamic id
+                          final user = context.read<AuthBloc>().user;
                           context.read<CartBloc>().add(
-                                GetUserCart(userId: 3),
+                                GetUserCart(
+                                  userId: user!.userId,
+                                  token: user.authToken,
+                                ),
                               );
                         },
                       )

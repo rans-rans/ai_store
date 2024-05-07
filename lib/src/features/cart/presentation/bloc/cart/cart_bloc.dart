@@ -16,13 +16,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<Map<String, dynamic>> removeProductFromCart({
     required int productId,
     required int userId,
+    required String token,
   }) async {
     try {
       final response = await cartRepository.removeProductFromCart(
         productId: productId,
         userId: userId,
+        token: token,
       );
-      add(GetUserCart(userId: userId));
+
+      add(GetUserCart(userId: userId, token: token));
       return response;
     } catch (e) {
       rethrow;
@@ -33,15 +36,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<GetUserCart>((event, emit) async {
       try {
         emit(CartFetchLoading());
-        final response = await cartRepository.fetchUserCart(userId: event.userId);
-
+        final response = await cartRepository.fetchUserCart(
+          userId: event.userId,
+          token: event.token,
+        );
         _cart = response;
         emit(CartFetchSuccess(cart: response));
       } catch (e) {
         emit(CartFetchFailed(message: e.toString()));
       }
     });
-    //TODO  use a better  approach
     on<ChangeItemQuantityEvent>((event, emit) async {
       try {
         final productIndex = _cart.products
@@ -50,6 +54,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           productId: event.productId,
           userId: event.userId,
           quantity: event.quantity,
+          token: event.token,
         );
         _cart.products[productIndex].quantity = event.quantity;
 
@@ -68,11 +73,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         final item = event.cartItem;
         final response = await cartRepository.addProductToCart(cartItem: {
           'product_id': item.productId,
-          //TODO  use dynamic id
-          'user_id': item.userId,
+          'id': item.userId,
           'quantity': 1,
           'variant': item.itemVariation,
-        });
+        }, token: event.token);
         if (response['status'] == 'failed') {
           emit(CartFetchFailed(message: response['message']));
         }

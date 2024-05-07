@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'src/features/auth/data/data_source/express_auth_datasource.dart';
+import 'src/features/auth/data/repository/express_auth_repository.dart';
+import 'src/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'src/features/cart/data/data_source/express_cart_datasource.dart';
 import 'src/features/cart/data/repository/express_cart_repo.dart';
 import 'src/features/cart/presentation/bloc/cart/cart_bloc.dart';
@@ -24,10 +27,12 @@ class Injector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //data sources
+    final authDatasource = ExpressAuthDatasource();
+    final cartDatasource = ExpressCartDatasource();
     final categoryDatasource = ExpressCategoryDatasource();
     final productsDatasource = ExpressProductsDatasource();
-    final cartDatasource = ExpressCartDatasource();
     //repostitories
+    final authRepository = ExpressAuthRepo(authDatasource: authDatasource);
     final expressProductsRepository =
         ExpressProductsRepository(datasource: productsDatasource);
     final expressCategoryRepo = ExpressCategoryRepo(datasource: categoryDatasource);
@@ -37,6 +42,11 @@ class Injector extends StatelessWidget {
     );
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => AuthBloc(authRepository: authRepository)),
+        BlocProvider(
+            create: (context) => BrandBloc(categoryRepository: expressCategoryRepo)),
+        BlocProvider(create: (context) => CartBloc(expressCartRepo)),
+        BlocProvider(create: (context) => CategoryBloc(expressCategoryRepo)),
         BlocProvider(
           create: (context) => CheckoutCubit(checkoutRepository: checkoutRepository),
         ),
@@ -48,17 +58,6 @@ class Injector extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProductBloc(expressProductsRepository),
-        ),
-        BlocProvider(
-          create: (context) => CategoryBloc(
-            expressCategoryRepo,
-          ),
-        ),
-        BlocProvider(
-          create: (context) => BrandBloc(categoryRepository: expressCategoryRepo),
-        ),
-        BlocProvider(
-          create: (context) => CartBloc(expressCartRepo),
         ),
       ],
       child: child,

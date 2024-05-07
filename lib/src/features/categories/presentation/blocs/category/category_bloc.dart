@@ -12,7 +12,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     on<FetchAllCategories>((event, emit) async {
       try {
         emit(CategoriesFetchLoading());
-        final response = await categoryRepository.fetchAllCategories();
+        final response = await categoryRepository.fetchAllCategories(event.token);
         emit(CategoriesFetchSuccess(categories: response));
       } catch (e) {
         emit(CategoriesFetchFailed());

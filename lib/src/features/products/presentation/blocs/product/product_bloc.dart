@@ -11,11 +11,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<bool> toggleFavorite({
     required int userId,
     required int productId,
+    required String token,
   }) async {
     try {
       final request = await productRepository.toggleFavorite(
         productId: productId,
         userId: userId,
+        token: token,
       );
       final response = request['message']['is_favorite'];
       return response;

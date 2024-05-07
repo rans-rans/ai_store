@@ -4,7 +4,11 @@ sealed class ProductsEvent {}
 
 final class FetchProducts extends ProductsEvent {
   final int userId;
-  FetchProducts({required this.userId});
+  final String token;
+  FetchProducts({
+    required this.userId,
+    required this.token,
+  });
 }
 
 final class FetchProductsByBrand extends ProductsEvent {

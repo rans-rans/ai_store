@@ -11,11 +11,13 @@ class ExpressAuthUser extends AuthUser {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'email': email,
-      'phone': phone,
-      'password': password,
       'token': authToken,
-      'id': userId,
+      'user': {
+        'email': email,
+        'phone': phone,
+        'password': password,
+        'id': userId,
+      }
     };
   }
 

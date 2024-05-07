@@ -12,13 +12,17 @@ class ExpressAuthDatasource implements AuthDatasource {
     required String password,
   }) async {
     try {
+      final payload = {
+        "email": email,
+        "password": password,
+      };
+
       final request = await post(
         Uri.parse("$baseUrl/auth/create-user"),
-        body: json.encode({
-          "email": email,
-          "password": password,
-        }),
+        headers: {'content-type': 'application/json'},
+        body: json.encode(payload),
       );
+
       final response = json.decode(request.body) as Map<String, dynamic>;
       if (request.statusCode != 201) {
         throw Exception(response);
@@ -36,16 +40,13 @@ class ExpressAuthDatasource implements AuthDatasource {
   }) async {
     try {
       final request = await post(Uri.parse("$baseUrl/auth/login"),
+          headers: {'content-type': 'application/json'},
           body: json.encode({
             "email": email,
             "password": password,
           }));
 
       final response = json.decode(request.body) as Map<String, dynamic>;
-
-      if (request.statusCode != 200) {
-        throw Exception(response);
-      }
       return response;
     } catch (e) {
       rethrow;
@@ -60,10 +61,11 @@ class ExpressAuthDatasource implements AuthDatasource {
     try {
       final request = await post(
         Uri.parse("$baseUrl/auth/logout"),
-        headers: {'Authorization': "Bearer $token"},
-        body: json.encode(
-          {"id": userId},
-        ),
+        headers: {
+          'Authorization': "Bearer $token",
+          'content-type': 'application/json',
+        },
+        body: json.encode({"id": userId}),
       );
       if (request.statusCode != 200) throw Exception(request.body);
     } catch (e) {

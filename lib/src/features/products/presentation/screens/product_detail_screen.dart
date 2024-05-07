@@ -6,6 +6,7 @@ import 'package:readmore/readmore.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/remove_from_cart_button.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../blocs/product/product_bloc.dart';
@@ -79,12 +80,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         onPressed: switch (cartProduct.quantity > 1) {
                           false => null,
                           true => () async {
-                              //TODO  use dynamic ID
+                              final user = context.read<AuthBloc>().user;
                               context.read<CartBloc>().add(
                                     ChangeItemQuantityEvent(
-                                      userId: 3,
+                                      userId: user!.userId,
                                       quantity: cartProduct.quantity - 1,
                                       productId: widget.product.id,
+                                      token: user.authToken,
                                     ),
                                   );
                             }
@@ -97,9 +99,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       //the increment button
                       IconButton(
                         onPressed: () async {
+                          final user = context.read<AuthBloc>().user;
                           context.read<CartBloc>().add(
                                 ChangeItemQuantityEvent(
-                                  userId: 3,
+                                  userId: user!.userId,
+                                  token: user.authToken,
                                   quantity: cartProduct.quantity + 1,
                                   productId: widget.product.id,
                                 ),
@@ -170,17 +174,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           context, "Please select item-variant");
                       return;
                     }
+                    final user = context.read<AuthBloc>().user;
 
                     context.read<CartBloc>().add(AddProductToCartEvent(
                           cartItem: ExpressCartItem(
                               quantity: 1,
                               productId: widget.product.id,
                               itemVariation: itemVariation!,
-                              userId: 3,
+                              userId: user!.userId,
                               discount: widget.product.discount,
                               productName: widget.product.name,
                               productPrice: widget.product.price,
                               imageUrl: widget.product.images.first),
+                          token: user.authToken,
                         ));
                   },
                   style: ElevatedButton.styleFrom(
@@ -220,11 +226,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     favoriteLoading = true;
                                   });
                                   try {
+                                    final user = context.read<AuthBloc>().user;
                                     final fav = await context
                                         .read<ProductBloc>()
                                         .toggleFavorite(
                                           userId: 3,
                                           productId: widget.product.id,
+                                          token: user!.authToken,
                                         );
                                     isFavorite = fav;
                                   } finally {

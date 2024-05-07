@@ -5,6 +5,7 @@ import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/online_image.dart';
 import '../../../../widgets/remove_from_cart_button.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../domain/entities/cart.dart';
 import '../bloc/cart/cart_bloc.dart';
 
@@ -54,9 +55,11 @@ class CartItemWidget extends StatelessWidget {
                     onPressed: switch (cartItem.quantity <= 1) {
                       true => null,
                       false => () {
+                          final user = context.read<AuthBloc>().user;
                           context.read<CartBloc>().add(
                                 ChangeItemQuantityEvent(
-                                  userId: 3,
+                                  token: user!.authToken,
+                                  userId: user.userId,
                                   quantity: cartItem.quantity - 1,
                                   productId: cartItem.productId,
                                 ),
@@ -69,9 +72,11 @@ class CartItemWidget extends StatelessWidget {
                   Text(cartItem.quantity.toString()),
                   IconButton(
                     onPressed: () {
+                      final user = context.read<AuthBloc>().user;
                       context.read<CartBloc>().add(
                             ChangeItemQuantityEvent(
-                              userId: 3,
+                              userId: user!.userId,
+                              token: user.authToken,
                               quantity: cartItem.quantity + 1,
                               productId: cartItem.productId,
                             ),

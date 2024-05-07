@@ -11,9 +11,9 @@ class ExpressCategoryRepo implements CategoryRepository {
   ExpressCategoryRepo({required this.datasource});
 
   @override
-  Future<List<Brand>> fetchAllBrands() async {
+  Future<List<Brand>> fetchAllBrands(String token) async {
     try {
-      final request = await datasource.fetchAllBrands();
+      final request = await datasource.fetchAllBrands(token);
       final response = request.map(ExpressBrand.fromStorage).toList();
       return response;
     } catch (e) {
@@ -22,9 +22,9 @@ class ExpressCategoryRepo implements CategoryRepository {
   }
 
   @override
-  Future<List<Category>> fetchAllCategories() async {
+  Future<List<Category>> fetchAllCategories(String token) async {
     try {
-      final request = await datasource.fetchAllBrands();
+      final request = await datasource.fetchAllBrands(token);
       final response = request.map(ExpressCategory.fromStorage).toList();
       return response;
     } catch (e) {

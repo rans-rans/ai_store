@@ -10,9 +10,9 @@ class ExpressProductsRepository implements ProductsRepository, ProductRepository
 
   ExpressProductsRepository({required this.datasource});
   @override
-  Future<List<Product>> fetchProducts(int userId) async {
+  Future<List<Product>> fetchProducts(int userId, String token) async {
     try {
-      final response = await datasource.fetchGeneralProducts(userId);
+      final response = await datasource.fetchGeneralProducts(userId, token);
       final products = response.map(ExpressProduct.fromStorage);
       return products.toList();
     } catch (e) {
@@ -21,14 +21,13 @@ class ExpressProductsRepository implements ProductsRepository, ProductRepository
   }
 
   @override
-  Future<List<Product>> fetchProductsByBrand({
-    required int brandID,
-    required int userId,
-  }) async {
+  Future<List<Product>> fetchProductsByBrand(
+      {required int brandID, required int userId, required String token}) async {
     try {
       final response = await datasource.fetchProductsByBrand(
         brandID: brandID,
         userId: userId,
+        token: token,
       );
       final products = response.map(ExpressProduct.fromStorage);
       return products.toList();
@@ -41,11 +40,13 @@ class ExpressProductsRepository implements ProductsRepository, ProductRepository
   Future<List<Product>> fetchProductsByCategory({
     required int categoryId,
     required int userId,
+    required String token,
   }) async {
     try {
       final response = await datasource.fetchProductsBycategory(
         categoryId: categoryId,
         userId: userId,
+        token: token,
       );
       final products = response.map(ExpressProduct.fromStorage);
       return products.toList();
@@ -55,29 +56,23 @@ class ExpressProductsRepository implements ProductsRepository, ProductRepository
   }
 
   @override
-  Stream<bool> listenToFavoriteStatus({
-    required int productId,
-    required int userId,
-  }) {
-    // TODO: implement listenToFavoriteStatus
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Map<String, dynamic>> rateProduct(Rating rating) async {
+  Future<Map<String, dynamic>> rateProduct(Rating rating, String token) async {
     try {
-      return await datasource.rateProduct(rating);
+      return await datasource.rateProduct(rating, token);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<Map<String, dynamic>> removeSavedProduct(
-      {required int productId, required int userId}) async {
+  Future<Map<String, dynamic>> removeSavedProduct({
+    required int productId,
+    required int userId,
+    required String token,
+  }) async {
     try {
       return await datasource.removeSavedProduct(
-          userId: userId, productId: productId);
+          userId: userId, productId: productId, token: token);
     } catch (e) {
       rethrow;
     }
@@ -87,9 +82,11 @@ class ExpressProductsRepository implements ProductsRepository, ProductRepository
   Future<Map<String, dynamic>> saveProduct({
     required int userId,
     required int productId,
+    required String token,
   }) async {
     try {
-      return await datasource.saveProduct(userId: userId, productId: productId);
+      return await datasource.saveProduct(
+          userId: userId, productId: productId, token: token);
     } catch (e) {
       rethrow;
     }
@@ -99,11 +96,13 @@ class ExpressProductsRepository implements ProductsRepository, ProductRepository
   Future<Map<String, dynamic>> toggleFavorite({
     required int productId,
     required int userId,
+    required String token,
   }) async {
     try {
       return await datasource.toggleFavorite(
         productId: productId,
         userId: userId,
+        token: token,
       );
     } catch (e) {
       rethrow;

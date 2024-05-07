@@ -8,19 +8,14 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
+
+  AuthUser? user;
+
   AuthBloc({
     required this.authRepository,
   }) : super(AuthUnAvailable()) {
     on<FetchUser>((event, emit) async {
-      try {
-        final user = await authRepository.getUserData();
-        if (user == null) {
-          return emit(AuthUnAvailable());
-        }
-        return emit(AuthAvailable(authUser: user));
-      } catch (e) {
-        rethrow;
-      }
+      user = event.user;
     });
     on<CreateAccountEvent>((event, emit) async {
       try {
@@ -28,9 +23,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: event.email,
           password: event.password,
         );
+        if (user == null) {
+          emit(AuthActionFailed('invalid credentials'));
+          return;
+        }
         emit(AuthAvailable(authUser: user));
       } catch (e) {
-        emit(AuthActionFailed(e.toString()));
+        emit(AuthActionFailed('unknown error.try again'));
       }
     });
     on<LoginEvent>((event, emit) async {
@@ -39,18 +38,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: event.email,
           password: event.password,
         );
+        this.user = user;
+        if (user == null) {
+          emit(AuthActionFailed('invalid credentials'));
+          return;
+        }
         emit(AuthAvailable(authUser: user));
       } catch (e) {
-        emit(AuthActionFailed(e.toString()));
+        emit(AuthActionFailed('unknown error.try again'));
       }
     });
-    on<LogoutEvent>((event, emit) {
+    on<LogoutEvent>((event, emit) async {
       try {
-        authRepository
+        await authRepository
             .logout(userId: event.userId, token: event.token)
-            .then((value) {
-          emit(AuthUnAvailable());
-        });
+            .then((value) => emit(AuthUnAvailable()));
       } catch (e) {
         rethrow;
       }

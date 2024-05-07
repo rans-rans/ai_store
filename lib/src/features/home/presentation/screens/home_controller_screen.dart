@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 
 import '../../../../constants/strings.dart';
+import '../../../auth/domain/entities/auth_user.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../../cart/presentation/screens/cart_screen.dart';
 import '../../../categories/presentation/blocs/brand/brand_bloc.dart';
@@ -12,7 +14,8 @@ import '../../../categories/presentation/screens/all_categories_screen.dart';
 import '../../../products/presentation/screens/general_products_screen.dart';
 
 class HomeControllerScreen extends StatefulWidget {
-  const HomeControllerScreen({super.key});
+  final AuthUser user;
+  const HomeControllerScreen(this.user, {super.key});
 
   @override
   State<HomeControllerScreen> createState() => _HomeControllerScreenState();
@@ -23,11 +26,16 @@ class _HomeControllerScreenState extends State<HomeControllerScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductsBloc>().add(FetchProducts(userId: 3));
-    context.read<CategoryBloc>().add(FetchAllCategories());
-    context.read<BrandBloc>().add(FetchAllBrandsEvent());
-    //TODO  use dynamic user
-    context.read<CartBloc>().add(GetUserCart(userId: 3));
+    final user = widget.user;
+    context.read<AuthBloc>().add(FetchUser(user));
+    context
+        .read<ProductsBloc>()
+        .add(FetchProducts(userId: user.userId, token: user.authToken));
+    context.read<CategoryBloc>().add(FetchAllCategories(user.authToken));
+    context.read<BrandBloc>().add(FetchAllBrandsEvent(user.authToken));
+    context
+        .read<CartBloc>()
+        .add(GetUserCart(userId: user.userId, token: user.authToken));
   }
 
   @override

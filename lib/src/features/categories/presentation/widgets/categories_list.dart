@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/numbers.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../products/presentation/blocs/products/products_bloc.dart';
 import '../blocs/brand/brand_bloc.dart';
 import 'brand_chip.dart';
@@ -14,6 +15,7 @@ class CategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AuthBloc>().user;
     final screenSize = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       primary: true,
@@ -53,9 +55,11 @@ class CategoriesList extends StatelessWidget {
           ),
           const SizedBox(height: mediumSpacing * 3),
           FutureBuilder(
-            //TODO  change  user-id
-            future:
-                context.read<ProductsBloc>().fetchProductsByCategory(categoryId, 3),
+            future: context.read<ProductsBloc>().fetchProductsByCategory(
+                  categoryId,
+                  user!.userId,
+                  user.authToken,
+                ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: Text('Loading'));

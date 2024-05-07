@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/numbers.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../domain/entities/category.dart';
 import '../blocs/category/category_bloc.dart';
 import '../widgets/categories_list.dart';
@@ -61,7 +62,10 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
             return Center(
               child: ElevatedButton(
                 onPressed: () {
-                  context.read<CategoryBloc>().add(FetchAllCategories());
+                  final user = context.read<AuthBloc>().state as AuthAvailable;
+                  context
+                      .read<CategoryBloc>()
+                      .add(FetchAllCategories(user.authUser.authToken));
                 },
                 child: const Text("Reload"),
               ),

@@ -12,10 +12,14 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   Future<List<Product>> fetchProductsByBrand(
     int brandId,
     int userId,
+    String token,
   ) async {
     try {
       final response = await _productsRepository.fetchProductsByBrand(
-          brandID: brandId, userId: userId);
+        brandID: brandId,
+        userId: userId,
+        token: token,
+      );
       return response;
     } catch (e) {
       rethrow;
@@ -25,10 +29,14 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   Future<List<Product>> fetchProductsByCategory(
     int categoryId,
     int userId,
+    String token,
   ) async {
     try {
       final response = await _productsRepository.fetchProductsByCategory(
-          categoryId: categoryId, userId: userId);
+        categoryId: categoryId,
+        userId: userId,
+        token: token,
+      );
       return response;
     } catch (e) {
       rethrow;
@@ -40,7 +48,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       emit(ProductsLoading());
       try {
         final products = await _productsRepository
-            .fetchProducts(event.userId)
+            .fetchProducts(event.userId, event.token)
             .timeout(const Duration(seconds: 7));
         emit(ProductsSuccess(products: products));
       } catch (e) {

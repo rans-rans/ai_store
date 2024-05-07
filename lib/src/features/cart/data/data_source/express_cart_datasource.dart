@@ -7,14 +7,17 @@ import 'cart_datasource.dart';
 
 class ExpressCartDatasource implements CartDatasource {
   @override
-  Future<Map<String, dynamic>> addProductToCart(
-      {required Map<String, dynamic> cartItem}) async {
+  Future<Map<String, dynamic>> addProductToCart({
+    required Map<String, dynamic> cartItem,
+    required String token,
+  }) async {
     try {
       final request = await http.post(
         Uri.parse('$baseUrl/shop/add-to-cart'),
         body: json.encode(cartItem),
         headers: {
           'content-type': 'application/json',
+          'Authorization': 'Bearer $token'
         },
       );
       final response = json.decode(request.body);
@@ -25,16 +28,22 @@ class ExpressCartDatasource implements CartDatasource {
   }
 
   @override
-  Future<Map<String, dynamic>> changeProductQuantity(
-      {required int productId, required int userId, required int quantity}) async {
+  Future<Map<String, dynamic>> changeProductQuantity({
+    required int productId,
+    required int userId,
+    required int quantity,
+    required String token,
+  }) async {
     try {
+      if (quantity < 0) throw Exception();
       final request = await http.post(
         Uri.parse('$baseUrl/shop/edit-cartitem-quantity'),
         headers: {
           'content-type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
         body: json.encode({
-          'user_id': userId,
+          'id': userId,
           'product_id': productId,
           'quantity': quantity,
         }),
@@ -47,13 +56,18 @@ class ExpressCartDatasource implements CartDatasource {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> fetchUserCart({required int userId}) async {
+  Future<List<Map<String, dynamic>>> fetchUserCart({
+    required int userId,
+    required String token,
+  }) async {
     try {
       final request = await http.post(
         Uri.parse('$baseUrl/shop/fetch-user-cart'),
-        body: {
-          'user_id': userId.toString(),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
+        body: json.encode({'id': userId.toString()}),
       );
       final response = json.decode(request.body) as List<dynamic>;
       return response.map((e) => e as Map<String, dynamic>).toList();
@@ -63,26 +77,20 @@ class ExpressCartDatasource implements CartDatasource {
   }
 
   @override
-  Stream<List<Map<String, dynamic>>> listenToCart({
-    required int userId,
-  }) {
-    // try {} catch (e) {}
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Map<String, dynamic>> removeProductFromCart({
     required int productId,
     required int userId,
+    required String token,
   }) async {
     try {
       final request = await http.post(
         Uri.parse('$baseUrl/shop/remove-from-cart'),
         headers: {
           'content-type': 'application/json',
+          'Authorization': 'Bearer $token'
         },
         body: json.encode({
-          'user_id': userId,
+          'id': userId,
           'product_id': productId,
         }),
       );

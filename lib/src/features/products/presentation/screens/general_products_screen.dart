@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../categories/presentation/blocs/category/category_bloc.dart';
 import '../../../home/presentation/widgets/product_card_widget.dart';
 import '../../../search/presentation/screens/open_camera_screen.dart';
@@ -24,7 +25,9 @@ class GeneralProductsScreen extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     return RefreshIndicator.adaptive(
       onRefresh: () async {
-        context.read<ProductsBloc>().add(FetchProducts(userId: 3));
+        final user = context.read<AuthBloc>().state as AuthAvailable;
+        context.read<ProductsBloc>().add(FetchProducts(
+            userId: user.authUser.userId, token: user.authUser.authToken));
       },
       child: Scaffold(
         appBar: AppBar(
@@ -100,7 +103,7 @@ class GeneralProductsScreen extends StatelessWidget {
                           height: size.height * 0.25,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: 4,
+                            itemCount: state.categories.length,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),

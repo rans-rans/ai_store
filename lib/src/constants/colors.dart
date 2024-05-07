@@ -1,22 +1,22 @@
-import 'package:flutter/material.dart'
-    show
-        AppBarTheme,
-        CardTheme,
-        Color,
-        ColorScheme,
-        Colors,
-        ElevatedButton,
-        ElevatedButtonThemeData,
-        PopupMenuThemeData,
-        TextButton,
-        TextButtonThemeData,
-        ThemeData;
+import 'package:flutter/material.dart';
+
+import 'numbers.dart';
 
 const primaryColor = Color.fromARGB(255, 255, 177, 60);
 const secondaryColor = Color.fromRGBO(231, 226, 214, 1);
 
 final lightTheme = ThemeData.light().copyWith(
   primaryColor: primaryColor,
+  inputDecorationTheme: InputDecorationTheme(
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(inputBorderRadius),
+      borderSide: const BorderSide(color: primaryColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(inputBorderRadius),
+      borderSide: const BorderSide(color: primaryColor),
+    ),
+  ),
   colorScheme: const ColorScheme.light(secondary: secondaryColor),
   appBarTheme: const AppBarTheme(
     surfaceTintColor: Colors.white,
@@ -44,6 +44,16 @@ final darkTheme = ThemeData.dark().copyWith(
   ),
   appBarTheme: const AppBarTheme(
     surfaceTintColor: Colors.black,
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(inputBorderRadius),
+      borderSide: const BorderSide(color: primaryColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(inputBorderRadius),
+      borderSide: const BorderSide(color: primaryColor),
+    ),
   ),
   textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(foregroundColor: Colors.white)),

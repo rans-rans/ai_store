@@ -12,7 +12,7 @@ class ExpressAuthRepo implements AuthRepository {
 
   ExpressAuthRepo({required this.authDatasource});
   @override
-  Future<AuthUser> createAccount({
+  Future<AuthUser?> createAccount({
     required String email,
     required String password,
   }) async {
@@ -20,6 +20,10 @@ class ExpressAuthRepo implements AuthRepository {
       final request =
           await authDatasource.createUser(email: email, password: password);
       final user = ExpressAuthUser.fromServer(request);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user', json.encode(user.toMap()));
+
       return user;
     } catch (e) {
       rethrow;
@@ -27,7 +31,7 @@ class ExpressAuthRepo implements AuthRepository {
   }
 
   @override
-  Future<AuthUser> loginUser({
+  Future<AuthUser?> loginUser({
     required String email,
     required String password,
   }) async {
@@ -36,11 +40,10 @@ class ExpressAuthRepo implements AuthRepository {
         email: email,
         password: password,
       );
+      if (request['token'] == null) return null;
       final user = ExpressAuthUser.fromServer(request);
       final prefs = await SharedPreferences.getInstance();
-
-      //although setString is a future, there isn't a need to await it
-      prefs.setString('user', json.encode(user.toMap()));
+      await prefs.setString('user', json.encode(user.toMap()));
 
       return user;
     } catch (e) {
@@ -49,16 +52,9 @@ class ExpressAuthRepo implements AuthRepository {
   }
 
   @override
-  Future<AuthUser?> getUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userData = prefs.getString('user');
-    if (userData == null) return null;
-    final user = json.decode(userData) as Map<String, dynamic>;
-    return ExpressAuthUser.fromServer(user);
-  }
-
-  @override
   Future<void> logout({required int userId, required String token}) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user');
     return await authDatasource.logout(
       userId: userId,
       token: token,
