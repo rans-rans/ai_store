@@ -12,12 +12,13 @@ class ExpressOrder extends Order {
   });
 
   @override
-  @override
   Map<String, dynamic> toServer(double cost) {
+    //TODO  add dynamic user-name
     return {
       'order_id': orderId,
-      'user_id': userId,
+      'id': userId,
       'total_cost': cost,
+      'customer_name': 'Rans',
       'order_date': orderDate.toIso8601String(),
       'delivery_location': deliveryLocation,
       'cart': json.encode(cart.products.map((item) => item.toServer()).toList()),

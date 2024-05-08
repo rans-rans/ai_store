@@ -22,91 +22,93 @@ class _CartScreenState extends State<CartScreen> {
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
         return Scaffold(
-            appBar: AppBar(
-              title: Text(switch (state) {
-                CartFetchSuccess() => "My Cart(${state.cart.products.length})",
-                _ => 'Cart Unavailable',
-              }),
-            ),
-            body: switch (state) {
-              CartFetchFailed() || CartInitial() => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Cart unavailable"),
-                      ElevatedButton(
-                        child: const Text('Retry'),
-                        onPressed: () {
-                          final user = context.read<AuthBloc>().user;
-                          context.read<CartBloc>().add(
-                                GetUserCart(
-                                  userId: user!.userId,
-                                  token: user.authToken,
-                                ),
+          appBar: AppBar(
+            title: Text(switch (state) {
+              CartFetchSuccess() => "My Cart(${state.cart.products.length})",
+              _ => 'Cart Unavailable',
+            }),
+          ),
+          body: switch (state) {
+            CartFetchFailed() || CartInitial() => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Cart unavailable"),
+                    ElevatedButton(
+                      child: const Text('Retry'),
+                      onPressed: () {
+                        final user = context.read<AuthBloc>().user;
+                        context.read<CartBloc>().add(
+                              GetUserCart(
+                                userId: user!.userId,
+                                token: user.authToken,
+                              ),
+                            );
+                      },
+                    )
+                  ],
+                ),
+              ),
+            CartFetchLoading() => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            CartFetchSuccess() => SingleChildScrollView(
+                primary: true,
+                child: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: switch (state.cart.products.isEmpty) {
+                    true => const Center(
+                        child: Text("Empty Cart"),
+                      ),
+                    false => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Items",
+                            style: TextStyle(
+                              fontSize: mediumFontSize,
+                              fontWeight: mediumFontWeight,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: smallSpacing,
+                          ),
+                          Flexible(
+                            child: ListView.builder(
+                              itemCount: state.cart.products.length,
+                              primary: false,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return CartItemWidget(
+                                  cartItem: state.cart.products[index],
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: mediumSpacing),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 55),
+                                backgroundColor: Theme.of(context).primaryColor),
+                            onPressed: () {
+                              HelperFunctions.gotoPage(
+                                context: context,
+                                page: CheckoutScreen(cart: state.cart),
                               );
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              CartFetchLoading() => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              CartFetchSuccess() => SingleChildScrollView(
-                  primary: true,
-                  child: Padding(
-                      padding: const EdgeInsets.all(defaultPadding),
-                      child: switch (state.cart.products.isEmpty) {
-                        true => const Center(
-                            child: Text("Empty Cart"),
+                            },
+                            child: const Text(
+                              'Procced',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                        false => Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Items",
-                                style: TextStyle(
-                                  fontSize: mediumFontSize,
-                                  fontWeight: mediumFontWeight,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: smallSpacing,
-                              ),
-                              Flexible(
-                                child: ListView.builder(
-                                  itemCount: state.cart.products.length,
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    return CartItemWidget(
-                                      cartItem: state.cart.products[index],
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: mediumSpacing),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(double.infinity, 55),
-                                    backgroundColor: Theme.of(context).primaryColor),
-                                onPressed: () {
-                                  HelperFunctions.gotoPage(
-                                    context: context,
-                                    page: CheckoutScreen(cart: state.cart),
-                                  );
-                                },
-                                child: const Text(
-                                  'Procced',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                      }),
-                )
-            });
+                        ],
+                      ),
+                  },
+                ),
+              )
+          },
+        );
       },
     );
   }

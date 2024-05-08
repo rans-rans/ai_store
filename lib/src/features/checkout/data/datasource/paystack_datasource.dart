@@ -19,7 +19,6 @@ class PaystackDatasource implements PaymentDatasource {
       final reference =
           '${now.year}${now.month}${now.day}${now.day}${now.hour}${now.minute}${now.second}';
 
-      //TODO  change  hardcoded value when  implementing  user-auth
       final request = PaystackTransactionRequest(
         reference: reference,
         secretKey: secrectKey,
@@ -46,7 +45,6 @@ class PaystackDatasource implements PaymentDatasource {
       ref,
       paystackSecretKey: key,
     );
-    print('verify response  is  $response');
     return response.status;
   }
 }

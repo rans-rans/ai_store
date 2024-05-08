@@ -5,6 +5,7 @@ import 'package:flutter_paystack_max/flutter_paystack_max.dart';
 import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../cart/domain/entities/cart.dart';
 import '../../../orders/domain/entities/express_order.dart';
 import '../../../orders/domain/entities/order.dart';
@@ -146,15 +147,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   onPressed: () async {
                     try {
-                      //TODO handle payment sucess and failure
+                      final user = context.read<AuthBloc>().user;
                       if (selectedLocation.value == null) {
                         HelperFunctions.snackShow(
                             context, "Please select a location");
                         return;
                       }
                       order = ExpressOrder(
+                        //the order id here doesn't count because ids are generated on  server
+                        //this is just here as some form of placeholder
                         orderId: 1,
-                        userId: 3,
+                        userId: user!.userId,
                         deliveryLocation: selectedLocation.value!,
                         orderDate: DateTime.now(),
                         cart: widget.cart,
@@ -162,11 +165,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       final initializedResponse =
                           await context.read<CheckoutCubit>().initializePayment(
                                 cart: order!,
-                                //TODO  put user  email here
-                                email: 'rans@test.com',
+                                email: user.email,
                               );
 
-                      print('initialized  response  is  $initializedResponse');
                       if (mounted) {
                         PaymentService.showPaymentModal(
                           context,
@@ -181,35 +182,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ),
                         ).then((value) async {
-                          final verifyResponse =
-                              await context.read<CheckoutCubit>().verifyTransaction(
-                                    key: secrectKey,
-                                    ref: initializedResponse['data']['reference'],
-                                  );
-                          print(verifyResponse);
+                          context.read<CheckoutCubit>().verifyTransaction(
+                                key: secrectKey,
+                                ref: initializedResponse['data']['reference'],
+                              );
                         });
                       }
                     } catch (e) {
                       rethrow;
                     }
                   },
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: "Checkout for ",
-                        ),
-                        TextSpan(
-                          text: HelperFunctions.formatToCurrency(5
-                              // getTotalAmount(widget.cart.products),
+                  child: FutureBuilder(
+                      future:
+                          HelperFunctions.getCartTotalPrice(widget.cart.products),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Text("...");
+                        }
+                        return RichText(
+                          text: TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: "Checkout for ",
                               ),
-                          style: const TextStyle(
-                            fontWeight: boldestFontWeight,
+                              TextSpan(
+                                text: HelperFunctions.formatToCurrency(
+                                    snapshot.requireData),
+                                style: const TextStyle(
+                                  fontWeight: boldestFontWeight,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                        );
+                      }),
                 ),
               ),
             ],
