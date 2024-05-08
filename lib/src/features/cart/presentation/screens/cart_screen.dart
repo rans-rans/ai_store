@@ -94,7 +94,7 @@ class _CartScreenState extends State<CartScreen> {
                             onPressed: () {
                               HelperFunctions.gotoPage(
                                 context: context,
-                                page: CheckoutScreen(cart: state.cart),
+                                page: const CheckoutScreen(),
                               );
                             },
                             child: const Text(

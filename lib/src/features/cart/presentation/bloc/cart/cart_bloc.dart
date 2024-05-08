@@ -11,8 +11,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   late Cart _cart;
 
-  Cart get cart => _cart;
-
   Future<Map<String, dynamic>> removeProductFromCart({
     required int productId,
     required int userId,
@@ -33,19 +31,25 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   CartBloc(this.cartRepository) : super(CartInitial()) {
-    on<GetUserCart>((event, emit) async {
+    on<AddProductToCartEvent>((event, emit) async {
       try {
-        emit(CartFetchLoading());
-        final response = await cartRepository.fetchUserCart(
-          userId: event.userId,
-          token: event.token,
-        );
-        _cart = response;
-        emit(CartFetchSuccess(cart: response));
+        final item = event.cartItem;
+        final response = await cartRepository.addProductToCart(cartItem: {
+          'product_id': item.productId,
+          'id': item.userId,
+          'quantity': 1,
+          'variant': item.itemVariation,
+        }, token: event.token);
+        if (response['status'] == 'failed') {
+          emit(CartFetchFailed(message: response['message']));
+        }
+        _cart.products.add(item);
+        emit(CartFetchSuccess(cart: _cart));
       } catch (e) {
-        emit(CartFetchFailed(message: e.toString()));
+        rethrow;
       }
     });
+
     on<ChangeItemQuantityEvent>((event, emit) async {
       try {
         final productIndex = _cart.products
@@ -68,22 +72,22 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     });
 
-    on<AddProductToCartEvent>((event, emit) async {
+    on<ClearCart>((event, emit) {
+      final cart = cartRepository.clearCart();
+      emit(CartFetchSuccess(cart: cart));
+    });
+
+    on<GetUserCart>((event, emit) async {
       try {
-        final item = event.cartItem;
-        final response = await cartRepository.addProductToCart(cartItem: {
-          'product_id': item.productId,
-          'id': item.userId,
-          'quantity': 1,
-          'variant': item.itemVariation,
-        }, token: event.token);
-        if (response['status'] == 'failed') {
-          emit(CartFetchFailed(message: response['message']));
-        }
-        _cart.products.add(item);
-        emit(CartFetchSuccess(cart: _cart));
+        emit(CartFetchLoading());
+        final response = await cartRepository.fetchUserCart(
+          userId: event.userId,
+          token: event.token,
+        );
+        _cart = response;
+        emit(CartFetchSuccess(cart: response));
       } catch (e) {
-        rethrow;
+        emit(CartFetchFailed(message: e.toString()));
       }
     });
   }

@@ -20,4 +20,5 @@ abstract class CartRepository {
     required int quantity,
     required String token,
   });
+  Cart clearCart();
 }

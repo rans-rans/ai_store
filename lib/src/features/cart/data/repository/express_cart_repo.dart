@@ -74,4 +74,9 @@ class ExpressCartRepo implements CartRepository {
       rethrow;
     }
   }
+
+  @override
+  Cart clearCart() {
+    return ExpressCart(products: []);
+  }
 }

@@ -1,16 +1,17 @@
-import 'package:ai_store/src/features/cart/domain/entities/express_cart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:readmore/readmore.dart';
 
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../../widgets/remove_from_cart_button.dart';
 import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
+import '../../../cart/domain/entities/express_cart.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../blocs/product/product_bloc.dart';
 import '../widgets/image_carousel.dart';
+import '../widgets/increment_decrement_item_widget.dart';
+import '../widgets/item_description_widget.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -73,45 +74,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RemoveFromCartButton(productId: widget.product.id),
-                  Row(
-                    children: [
-                      //the decrement button
-                      IconButton(
-                        onPressed: switch (cartProduct.quantity > 1) {
-                          false => null,
-                          true => () async {
-                              final user = context.read<AuthBloc>().user;
-                              context.read<CartBloc>().add(
-                                    ChangeItemQuantityEvent(
-                                      userId: user!.userId,
-                                      quantity: cartProduct.quantity - 1,
-                                      productId: widget.product.id,
-                                      token: user.authToken,
-                                    ),
-                                  );
-                            }
-                        },
-                        icon: const Icon(Icons.remove),
-                      ),
-                      //the item quantity
-                      Text(cartProduct.quantity.toString()),
-
-                      //the increment button
-                      IconButton(
-                        onPressed: () async {
-                          final user = context.read<AuthBloc>().user;
-                          context.read<CartBloc>().add(
-                                ChangeItemQuantityEvent(
-                                  userId: user!.userId,
-                                  token: user.authToken,
-                                  quantity: cartProduct.quantity + 1,
-                                  productId: widget.product.id,
-                                ),
-                              );
-                        },
-                        icon: const Icon(Icons.add),
-                      ),
-                    ],
+                  IncrementDecrementItemWidget(
+                    cartProduct: cartProduct,
+                    product: widget.product,
                   )
                 ],
               );
@@ -216,29 +181,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: StatefulBuilder(
                     builder: (context, snap) {
                       return CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.white30,
-                        child: favoriteLoading
-                            ? const CircularProgressIndicator()
-                            : IconButton(
+                          radius: 30,
+                          backgroundColor: Colors.white30,
+                          child: switch (favoriteLoading) {
+                            true => const CircularProgressIndicator(),
+                            false => IconButton(
                                 onPressed: () async {
-                                  snap(() {
-                                    favoriteLoading = true;
-                                  });
+                                  snap(() => favoriteLoading = true);
                                   try {
                                     final user = context.read<AuthBloc>().user;
                                     final fav = await context
                                         .read<ProductBloc>()
                                         .toggleFavorite(
-                                          userId: 3,
+                                          userId: user!.userId,
                                           productId: widget.product.id,
-                                          token: user!.authToken,
+                                          token: user.authToken,
                                         );
                                     isFavorite = fav;
                                   } finally {
-                                    snap(() {
-                                      favoriteLoading = false;
-                                    });
+                                    snap(() => favoriteLoading = false);
                                   }
                                 },
                                 icon: Icon(
@@ -253,7 +214,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   },
                                 ),
                               ),
-                      );
+                          });
                     },
                   ),
                 )
@@ -275,26 +236,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: smallSpacing),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ReadMoreText(
-                      widget.product.description,
-                      trimLines: 2,
-                      colorClickableText: Colors.pink,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: 'Show more',
-                      trimExpandedText: ' ...Show less',
-                      lessStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor),
-                      moreStyle: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
+                  ItemDescriptionWidget(description: widget.product.description),
                   const SizedBox(height: smallSpacing),
                   //TODO add functionality to rating stars
                   Row(
@@ -309,6 +251,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ],
                       ),
                       Text(
+                        //TODO add number of ratings here
                         "531 ratings",
                         style: TextStyle(color: Theme.of(context).primaryColor),
                       ),

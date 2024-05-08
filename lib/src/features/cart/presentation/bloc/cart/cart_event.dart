@@ -2,6 +2,8 @@ part of 'cart_bloc.dart';
 
 sealed class CartEvent {}
 
+final class ClearCart extends CartEvent {}
+
 final class GetUserCart extends CartEvent {
   final int userId;
   final String token;
