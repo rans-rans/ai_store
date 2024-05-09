@@ -7,21 +7,13 @@ import 'products_datasource.dart';
 
 class ExpressProductsDatasource implements ProductsDataSource {
   @override
-  Future<List<Map<String, dynamic>>> fetchGeneralProducts(
-      int userId, String token) async {
+  Future<List<Map<String, dynamic>>> fetchGeneralProducts(String token) async {
     try {
-      final request = await http.post(Uri.parse('$baseUrl/shop/fetch-products'),
+      final request = await http.get(Uri.parse('$baseUrl/shop/fetch-products'),
           headers: {
             'content-type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-          body: json.encode(
-            {
-              //TODO  the data should although but an int but it give an error
-              //i am converting to string which works but i will investigate later
-              'id': userId.toString(),
-            },
-          ));
+            'Authorization': 'Bearer $token'
+          });
       final data = json.decode(request.body) as List<dynamic>;
       final productsData = data.map((e) => e as Map<String, dynamic>).toList();
       return productsData;
@@ -31,9 +23,33 @@ class ExpressProductsDatasource implements ProductsDataSource {
   }
 
   @override
+  Future<Map<String, dynamic>> fetchProductDetails({
+    required int productId,
+    required int userId,
+    required String authToken,
+  }) async {
+    try {
+      final request = await http.post(
+        Uri.parse('$baseUrl/shop/fetch-product-details'),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: json.encode({
+          'product_id': productId,
+          'id': userId,
+        }),
+      );
+      final description = json.decode(request.body) as Map<String, dynamic>;
+      return description;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<Map<String, dynamic>>> fetchProductsByBrand({
     required int brandID,
-    required int userId,
     required String token,
   }) async {
     try {
@@ -43,10 +59,7 @@ class ExpressProductsDatasource implements ProductsDataSource {
           'Authorization': 'Bearer $token',
           'content-type': 'application/json',
         },
-        body: json.encode({
-          'brand_id': brandID,
-          'id': userId,
-        }),
+        body: json.encode({'brand_id': brandID}),
       );
       final data = json.decode(response.body) as List<dynamic>;
       return data.map((e) => e as Map<String, dynamic>).toList();
@@ -58,7 +71,6 @@ class ExpressProductsDatasource implements ProductsDataSource {
   @override
   Future<List<Map<String, dynamic>>> fetchProductsBycategory({
     required int categoryId,
-    required int userId,
     required String token,
   }) async {
     final response = await http.post(
@@ -67,10 +79,7 @@ class ExpressProductsDatasource implements ProductsDataSource {
         'Authorization': 'Bearer $token',
         'content-type': 'application/json',
       },
-      body: json.encode({
-        'category_id': categoryId,
-        'id': userId,
-      }),
+      body: json.encode({'category_id': categoryId}),
     );
     final data = json.decode(response.body) as List<dynamic>;
     return data.map((e) => e as Map<String, dynamic>).toList();

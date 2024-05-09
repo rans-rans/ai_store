@@ -1,13 +1,16 @@
 abstract class ProductsDataSource {
-  Future<List<Map<String, dynamic>>> fetchGeneralProducts(int userId, String token);
+  Future<List<Map<String, dynamic>>> fetchGeneralProducts(String token);
+  Future<Map<String, dynamic>> fetchProductDetails({
+    required int productId,
+    required int userId,
+    required String authToken,
+  });
   Future<List<Map<String, dynamic>>> fetchProductsByBrand({
     required int brandID,
-    required int userId,
     required String token,
   });
   Future<List<Map<String, dynamic>>> fetchProductsBycategory({
     required int categoryId,
-    required int userId,
     required String token,
   });
 

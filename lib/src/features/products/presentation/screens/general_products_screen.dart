@@ -26,8 +26,9 @@ class GeneralProductsScreen extends StatelessWidget {
     return RefreshIndicator.adaptive(
       onRefresh: () async {
         final user = context.read<AuthBloc>().state as AuthAvailable;
-        context.read<ProductsBloc>().add(FetchProducts(
-            userId: user.authUser.userId, token: user.authUser.authToken));
+        context.read<ProductsBloc>().add(
+              FetchProducts(token: user.authUser.authToken),
+            );
       },
       child: Scaffold(
         appBar: AppBar(

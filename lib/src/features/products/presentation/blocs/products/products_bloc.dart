@@ -16,8 +16,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ) async {
     try {
       final response = await _productsRepository.fetchProductsByBrand(
-        brandID: brandId,
-        userId: userId,
+        brandId: brandId,
         token: token,
       );
       return response;
@@ -34,7 +33,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     try {
       final response = await _productsRepository.fetchProductsByCategory(
         categoryId: categoryId,
-        userId: userId,
         token: token,
       );
       return response;
@@ -48,7 +46,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       emit(ProductsLoading());
       try {
         final products = await _productsRepository
-            .fetchProducts(event.userId, event.token)
+            .fetchProducts(event.token)
             .timeout(const Duration(seconds: 7));
         emit(ProductsSuccess(products: products));
       } catch (e) {

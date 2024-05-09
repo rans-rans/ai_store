@@ -28,9 +28,7 @@ class _HomeControllerScreenState extends State<HomeControllerScreen> {
     super.initState();
     final user = widget.user;
     context.read<AuthBloc>().add(FetchUser(user));
-    context
-        .read<ProductsBloc>()
-        .add(FetchProducts(userId: user.userId, token: user.authToken));
+    context.read<ProductsBloc>().add(FetchProducts(token: user.authToken));
     context.read<CategoryBloc>().add(FetchAllCategories(user.authToken));
     context.read<BrandBloc>().add(FetchAllBrandsEvent(user.authToken));
     context

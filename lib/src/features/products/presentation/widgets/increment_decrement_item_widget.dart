@@ -4,17 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../cart/domain/entities/cart.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
-import '../../domain/entities/product.dart';
 
 class IncrementDecrementItemWidget extends StatelessWidget {
   const IncrementDecrementItemWidget({
     super.key,
     required this.cartProduct,
-    required this.product,
+    required this.productId,
+    required this.productQuantity,
   });
 
   final CartItem cartProduct;
-  final Product product;
+  final int productId;
+  final int productQuantity;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class IncrementDecrementItemWidget extends StatelessWidget {
                       ChangeItemQuantityEvent(
                         userId: user!.userId,
                         quantity: cartProduct.quantity - 1,
-                        productId: product.id,
+                        productId: productId,
                         token: user.authToken,
                       ),
                     );
@@ -46,7 +47,7 @@ class IncrementDecrementItemWidget extends StatelessWidget {
         IconButton(
           onPressed: () async {
             final user = context.read<AuthBloc>().user;
-            if (cartProduct.quantity >= product.quantity) {
+            if (cartProduct.quantity >= productQuantity) {
               ScaffoldMessenger.of(context).removeCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -59,7 +60,7 @@ class IncrementDecrementItemWidget extends StatelessWidget {
                     userId: user!.userId,
                     token: user.authToken,
                     quantity: cartProduct.quantity + 1,
-                    productId: product.id,
+                    productId: productId,
                   ),
                 );
           },

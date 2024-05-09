@@ -17,7 +17,7 @@ class ProductCardWidget extends StatelessWidget {
       onTap: () {
         HelperFunctions.gotoPage(
           context: context,
-          page: ProductDetailScreen(product: product),
+          page: ProductDetailScreen(productId: product.productId),
         );
       },
       child: Padding(
@@ -26,7 +26,7 @@ class ProductCardWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             OnlineImage(
-              image: product.images.first,
+              image: product.image,
               height: screenSize.height * 0.17,
             ),
             //product name comes here

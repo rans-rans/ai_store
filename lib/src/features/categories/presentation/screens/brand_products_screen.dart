@@ -39,12 +39,13 @@ class BrandProductsScreen extends StatelessWidget {
                 return ListTile(
                   onTap: () {
                     HelperFunctions.gotoPage(
-                      context: context,
-                      page: ProductDetailScreen(product: product),
-                    );
+                        context: context,
+                        page: ProductDetailScreen(
+                          productId: product.productId,
+                        ));
                   },
                   leading: OnlineImage(
-                    image: product.images.first,
+                    image: product.image,
                     width: screenSize.width * 0.25,
                   ),
                   title: Text(
@@ -75,11 +76,11 @@ class BrandProductsScreen extends StatelessWidget {
                         ),
                     ],
                   ),
-                  subtitle: Text(
-                    product.description,
-                    maxLines: 1,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
+                  // subtitle: Text(
+                  //   product.description,
+                  //   maxLines: 1,
+                  //   style: const TextStyle(color: Colors.grey),
+                  // ),
                 );
               },
             );

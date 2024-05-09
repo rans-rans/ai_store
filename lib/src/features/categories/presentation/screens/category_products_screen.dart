@@ -16,14 +16,15 @@ class CategoryProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AuthBloc>().state as AuthAvailable;
+    final user = context.read<AuthBloc>().user!;
     return Scaffold(
       appBar: AppBar(
         title: Text(category.name),
       ),
       body: FutureBuilder(
-          future: context.read<ProductsBloc>().fetchProductsByCategory(
-              category.id, user.authUser.userId, user.authUser.authToken),
+          future: context
+              .read<ProductsBloc>()
+              .fetchProductsByCategory(category.id, user.userId, user.authToken),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -39,10 +40,10 @@ class CategoryProductsScreen extends StatelessWidget {
                   onTap: () {
                     HelperFunctions.gotoPage(
                       context: context,
-                      page: ProductDetailScreen(product: product),
+                      page: ProductDetailScreen(productId: product.productId),
                     );
                   },
-                  leading: OnlineImage(image: product.images.first),
+                  leading: OnlineImage(image: product.image),
                   title: Text(product.name),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -70,10 +71,10 @@ class CategoryProductsScreen extends StatelessWidget {
                         ),
                     ],
                   ),
-                  subtitle: Text(
-                    product.description,
-                    maxLines: 3,
-                  ),
+                  // subtitle: Text(
+                  //   product.description,
+                  //   maxLines: 3,
+                  // ),
                   isThreeLine: true,
                 );
               },
