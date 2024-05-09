@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../../../constants/numbers.dart';
 import '../../../../widgets/favorite_button.dart';
+import '../../data/data_source/products_datasource.dart';
 import '../../domain/entities/product_details.dart';
 import 'image_carousel.dart';
 import 'item_description_widget.dart';
+import 'rating_sheet.dart';
+import 'ratings_list.dart';
 
-class DescriptionBody extends StatelessWidget {
+class DescriptionBody extends StatefulWidget {
   final ProductDetails product;
   final ValueNotifier selectedVariation;
   const DescriptionBody({
@@ -14,6 +18,20 @@ class DescriptionBody extends StatelessWidget {
     required this.product,
     required this.selectedVariation,
   });
+
+  @override
+  State<DescriptionBody> createState() => _DescriptionBodyState();
+}
+
+class _DescriptionBodyState extends State<DescriptionBody> {
+  final ratings = ValueNotifier<List<Rating>>([]);
+  late ValueNotifier<double> averageRating;
+
+  @override
+  void initState() {
+    super.initState();
+    averageRating = ValueNotifier(widget.product.averageRating);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +43,12 @@ class DescriptionBody extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomRight,
             children: [
-              ImageCarousel(imagePaths: product.images),
+              ImageCarousel(imagePaths: widget.product.images),
               Positioned(
                 right: screenSize.width * 0.05,
                 child: FavoriteButton(
-                  productId: product.productId,
-                  isFavorite: product.isFavorite,
+                  productId: widget.product.productId,
+                  isFavorite: widget.product.isFavorite,
                 ),
               )
             ],
@@ -42,7 +60,7 @@ class DescriptionBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product.name,
+                  widget.product.name,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
                   maxLines: 4,
@@ -51,24 +69,69 @@ class DescriptionBody extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: smallSpacing),
-                ItemDescriptionWidget(description: product.description),
+                ItemDescriptionWidget(description: widget.product.description),
                 const SizedBox(height: smallSpacing),
-                //TODO add functionality to rating stars
                 Row(
                   children: [
-                    const Row(
-                      children: [
-                        Icon(Icons.star_border),
-                        Icon(Icons.star_border),
-                        Icon(Icons.star_border),
-                        Icon(Icons.star_border),
-                        Icon(Icons.star_border),
-                      ],
+                    InkWell(
+                      onTap: () async {
+                        final rating = await showModalBottomSheet(
+                          context: context,
+                          isDismissible: false,
+                          builder: (_) {
+                            return RatingSheet(productId: widget.product.productId);
+                          },
+                          constraints:
+                              BoxConstraints(maxHeight: screenSize.height * 0.7),
+                        ) as Rating?;
+                        if (rating != null) {
+                          ratings.value = [rating, ...ratings.value];
+                          final prodRatings = ratings.value.map((e) => e.score);
+                          averageRating.value = prodRatings
+                              .reduce((value, element) => value + element)
+                              .toDouble();
+                        }
+                      },
+                      child: ValueListenableBuilder(
+                          valueListenable: averageRating,
+                          builder: (context, rating, child) {
+                            return RatingBarIndicator(
+                              itemCount: 5,
+                              rating: rating,
+                              itemSize: 18,
+                              itemBuilder: (context, _) {
+                                return Icon(
+                                  Icons.star,
+                                  color: Theme.of(context).primaryColor,
+                                );
+                              },
+                            );
+                          }),
                     ),
-                    Text(
-                      //TODO add number of ratings here
-                      "531 ratings",
-                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    const SizedBox(width: smallSpacing),
+                    ValueListenableBuilder(
+                      valueListenable: averageRating,
+                      builder: (context, rating, child) {
+                        return Text(
+                          rating.toStringAsFixed(1),
+                          style: TextStyle(color: Theme.of(context).primaryColor),
+                        );
+                      },
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      child: const Text('See all'),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return RatingsList(
+                              ratings: ratings,
+                              productId: widget.product.productId,
+                            );
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -79,10 +142,10 @@ class DescriptionBody extends StatelessWidget {
                     label: const Text("Select variant"),
                     width: MediaQuery.sizeOf(context).width * 0.8,
                     onSelected: (value) {
-                      selectedVariation.value = value;
+                      widget.selectedVariation.value = value;
                     },
                     dropdownMenuEntries: [
-                      ...product.variants.map(
+                      ...widget.product.variants.map(
                         (variant) => DropdownMenuEntry(
                           value: variant,
                           label: variant,
@@ -114,14 +177,14 @@ class DescriptionBody extends StatelessWidget {
                     TableRow(
                       children: [
                         const Text("Quanntity status"),
-                        Text("${product.quantity}"),
+                        Text("${widget.product.quantity}"),
                       ],
                     ),
                     TableRow(
                       children: [
                         const Text("Brand"),
                         Text(
-                          product.brand,
+                          widget.product.brand,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -130,7 +193,6 @@ class DescriptionBody extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 100),
-                //TODO add reviews and similar products below
               ],
             ),
           )

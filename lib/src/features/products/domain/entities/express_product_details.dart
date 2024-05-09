@@ -2,7 +2,8 @@ import 'product_details.dart';
 
 class ExpressProductDetails extends ProductDetails {
   ExpressProductDetails(
-      {required super.brand,
+      {required super.averageRating,
+      required super.brand,
       required super.category,
       required super.description,
       required super.discount,
@@ -15,7 +16,16 @@ class ExpressProductDetails extends ProductDetails {
       required super.variants});
 
   factory ExpressProductDetails.fromServer(Map<String, dynamic> data) {
+    late int rating;
+    String ratingString = data['rating_score'];
+    if (ratingString.contains('-')) {
+      rating = 0;
+    } else {
+      ratingString = ratingString.replaceAll('-', '');
+      rating = double.parse(ratingString).ceil();
+    }
     return ExpressProductDetails(
+      averageRating: rating.toDouble(),
       brand: data['brand_name'],
       category: data['category_name'],
       description: data['description'],

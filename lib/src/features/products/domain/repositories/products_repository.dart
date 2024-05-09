@@ -17,11 +17,19 @@ abstract class ProductsRepository {
     required int brandId,
     required String token,
   });
-
-  Future<Map<String, dynamic>> rateProduct(Rating rating, String token);
+  Future<List<Rating>> fetchProductRatings({
+    required String token,
+    required int productId,
+  });
+  Future<bool> rateProduct(Rating rating, String token);
   Future<Map<String, dynamic>> removeSavedProduct({
     required int userId,
     required int productId,
+    required String token,
+  });
+  Future<bool> removeProductRating({
+    required int productId,
+    required int userId,
     required String token,
   });
   Future<Map<String, dynamic>> saveProduct({

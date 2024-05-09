@@ -1,17 +1,21 @@
 abstract class ProductsDataSource {
-  Future<List<Map<String, dynamic>>> fetchGeneralProducts(String token);
+  Future<List<dynamic>> fetchGeneralProducts(String token);
   Future<Map<String, dynamic>> fetchProductDetails({
     required int productId,
     required int userId,
     required String authToken,
   });
-  Future<List<Map<String, dynamic>>> fetchProductsByBrand({
+  Future<List<dynamic>> fetchProductsByBrand({
     required int brandID,
     required String token,
   });
-  Future<List<Map<String, dynamic>>> fetchProductsBycategory({
+  Future<List<dynamic>> fetchProductsBycategory({
     required int categoryId,
     required String token,
+  });
+  Future<List<dynamic>> fetchProductRatings({
+    required String token,
+    required int productId,
   });
 
   Future<Map<String, dynamic>> saveProduct({
@@ -28,6 +32,11 @@ abstract class ProductsDataSource {
   Future<Map<String, dynamic>> removeSavedProduct({
     required int userId,
     required int productId,
+    required String token,
+  });
+  Future<dynamic> removeProductRating({
+    required int productId,
+    required int userId,
     required String token,
   });
 }
@@ -55,5 +64,15 @@ class Rating {
       'comment': comment,
       'date_created': dateCreated
     };
+  }
+
+  factory Rating.fromServer(dynamic data) {
+    return Rating(
+      productId: data['product_id'],
+      userId: data['user_id'],
+      comment: data['comment'],
+      score: data['score'],
+      dateCreated: data['date_created'],
+    );
   }
 }

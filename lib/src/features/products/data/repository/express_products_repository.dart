@@ -36,7 +36,6 @@ class ExpressProductsRepository implements ProductsRepository {
       final product = ExpressProductDetails.fromServer(request);
       return product;
     } catch (e) {
-      print('error  in  fetch-details $e');
       rethrow;
     }
   }
@@ -76,9 +75,46 @@ class ExpressProductsRepository implements ProductsRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> rateProduct(Rating rating, String token) async {
+  Future<List<Rating>> fetchProductRatings({
+    required String token,
+    required int productId,
+  }) async {
     try {
-      return await datasource.rateProduct(rating, token);
+      final request = await datasource.fetchProductRatings(
+        token: token,
+        productId: productId,
+      );
+      final ratings = request.map(Rating.fromServer).toList();
+      return ratings;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> rateProduct(Rating rating, String token) async {
+    try {
+      final response = await datasource.rateProduct(rating, token);
+      final status = response['status'] as bool;
+      return status;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> removeProductRating({
+    required int productId,
+    required int userId,
+    required String token,
+  }) async {
+    try {
+      final request = await datasource.removeProductRating(
+        productId: productId,
+        userId: userId,
+        token: token,
+      );
+      return request['status'] == true;
     } catch (e) {
       rethrow;
     }

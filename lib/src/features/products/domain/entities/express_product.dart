@@ -13,7 +13,7 @@ class ExpressProduct extends Product {
     required super.quantity,
   });
 
-  factory ExpressProduct.fromServer(Map<String, dynamic> data) {
+  factory ExpressProduct.fromServer(dynamic data) {
     late int rating;
     String ratingString = data['rating_score'];
     if (ratingString.contains('-')) {

@@ -7,7 +7,7 @@ import 'products_datasource.dart';
 
 class ExpressProductsDatasource implements ProductsDataSource {
   @override
-  Future<List<Map<String, dynamic>>> fetchGeneralProducts(String token) async {
+  Future<List<dynamic>> fetchGeneralProducts(String token) async {
     try {
       final request = await http.get(Uri.parse('$baseUrl/shop/fetch-products'),
           headers: {
@@ -15,8 +15,7 @@ class ExpressProductsDatasource implements ProductsDataSource {
             'Authorization': 'Bearer $token'
           });
       final data = json.decode(request.body) as List<dynamic>;
-      final productsData = data.map((e) => e as Map<String, dynamic>).toList();
-      return productsData;
+      return data;
     } catch (e) {
       rethrow;
     }
@@ -48,7 +47,7 @@ class ExpressProductsDatasource implements ProductsDataSource {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> fetchProductsByBrand({
+  Future<List<dynamic>> fetchProductsByBrand({
     required int brandID,
     required String token,
   }) async {
@@ -62,14 +61,14 @@ class ExpressProductsDatasource implements ProductsDataSource {
         body: json.encode({'brand_id': brandID}),
       );
       final data = json.decode(response.body) as List<dynamic>;
-      return data.map((e) => e as Map<String, dynamic>).toList();
+      return data;
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<List<Map<String, dynamic>>> fetchProductsBycategory({
+  Future<List<dynamic>> fetchProductsBycategory({
     required int categoryId,
     required String token,
   }) async {
@@ -82,7 +81,29 @@ class ExpressProductsDatasource implements ProductsDataSource {
       body: json.encode({'category_id': categoryId}),
     );
     final data = json.decode(response.body) as List<dynamic>;
-    return data.map((e) => e as Map<String, dynamic>).toList();
+    return data;
+  }
+
+  @override
+  Future<List<dynamic>> fetchProductRatings({
+    required String token,
+    required int productId,
+  }) async {
+    try {
+      final request = await http.post(
+        Uri.parse('$baseUrl/shop/fetch-product-ratings'),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({'product_id': productId}),
+      );
+
+      final ratingsData = json.decode(request.body) as List<dynamic>;
+      return ratingsData;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
@@ -118,6 +139,30 @@ class ExpressProductsDatasource implements ProductsDataSource {
     );
     final data = json.decode(response.body) as Map<String, dynamic>;
     return data;
+  }
+
+  @override
+  Future<dynamic> removeProductRating({
+    required int productId,
+    required int userId,
+    required String token,
+  }) async {
+    try {
+      final request = await http.post(
+        Uri.parse('$baseUrl/shop/remove-product-rating'),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'id': userId,
+          'product_id': productId,
+        }),
+      );
+      return request;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show listEquals;
 
 abstract class ProductDetails {
+  final double averageRating;
   final String brand;
   final String category;
   final String description;
@@ -16,6 +17,7 @@ abstract class ProductDetails {
   ProductDetails(
       {required this.brand,
       required this.category,
+      required this.averageRating,
       required this.description,
       required this.discount,
       required this.isFavorite,
@@ -34,6 +36,7 @@ abstract class ProductDetails {
         other.brand == brand &&
         other.category == category &&
         other.description == description &&
+        other.averageRating == averageRating &&
         other.discount == discount &&
         other.isFavorite == isFavorite &&
         listEquals(other.images, images) &&
@@ -52,6 +55,7 @@ abstract class ProductDetails {
         isFavorite.hashCode ^
         images.hashCode ^
         name.hashCode ^
+        averageRating.hashCode ^
         price.hashCode ^
         productId.hashCode ^
         quantity.hashCode ^
@@ -63,6 +67,6 @@ abstract class ProductDetails {
     return """ProductDetails(brand: $brand, category: $category, description:
      $description, favorite: $isFavorite, images: $images, name: $name, price: $price,
       productId: $productId, quantity: $quantity, variants: $variants, 
-      discount: $discount)""";
+      discount: $discount, average_rating: $averageRating)""";
   }
 }
