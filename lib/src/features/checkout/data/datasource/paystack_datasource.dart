@@ -24,7 +24,7 @@ class PaystackDatasource implements PaymentDatasource {
         secretKey: secrectKey,
         email: email,
         amount: (amount * 100).ceilToDouble(),
-        metadata: json.encode(order.toServer(amount)),
+        metadata: json.encode(order.toMap(amount)),
         currency: PaystackCurrency.ghs,
         channel: [PaystackPaymentChannel.mobileMoney],
       );

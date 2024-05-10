@@ -192,9 +192,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             return;
                           }
                           order = ExpressOrder(
-                            //the order id here doesn't count because ids are generated on  server
-                            //this is just here as some form of placeholder
-                            orderId: 1,
                             customerName: user.username,
                             userId: user.userId,
                             deliveryLocation: selectedLocation.value!,

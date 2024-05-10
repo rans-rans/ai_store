@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/search_result_tile.dart';
+// import '../widgets/search_result_tile.dart';
 import '../widgets/show_sort_filer_drawer.dart';
 
 class SearchResultsScreen extends StatelessWidget {
@@ -36,7 +36,7 @@ class SearchResultsScreen extends StatelessWidget {
           const Column(
             children: [
               //TODO  list of results below
-              SearchResultTile(),
+              // SearchResultTile(),
             ],
           ),
           ShowSortFilterDrawer(screenSize: screenSize)
