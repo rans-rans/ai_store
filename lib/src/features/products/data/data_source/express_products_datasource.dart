@@ -84,7 +84,6 @@ class ExpressProductsDatasource implements ProductsDataSource {
       final data = json.decode(response.body) as List<dynamic>;
       return data;
     } catch (e) {
-      print("error  in  here  $e");
       rethrow;
     }
   }

@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/numbers.dart';
 import '../../../../constants/strings.dart';
+import '../../../../utils/helper_functions.dart';
+import '../../../auth/domain/entities/auth_user.dart';
+import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
+import '../widgets/signout_button.dart';
 import 'collection_screen.dart';
-import 'settings_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late AuthUser user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = context.read<AuthBloc>().user!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,55 +38,53 @@ class ProfileScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8.0, bottom: 16),
                   child: Row(
                     children: [
-                      //TODO profile-img comes here
                       const CircleAvatar(
                         backgroundColor: Colors.grey,
                         minRadius: 40,
                         child: Icon(Icons.person),
                       ),
                       const Spacer(flex: 1),
-                      //TODO profile name comes here
-                      const Text(
-                        "Yakeen Radiat",
-                        style: TextStyle(
-                            fontWeight: mediumFontWeight, fontSize: mediumFontSize),
+                      Text(
+                        user.username,
+                        style: const TextStyle(
+                          fontWeight: mediumFontWeight,
+                          fontSize: mediumFontSize,
+                        ),
                       ),
                       const Spacer(flex: 3),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SettingsScreen(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.settings),
-                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: mediumSpacing),
+                const SizedBox(height: smallSpacing),
+                const Divider(thickness: 3),
                 ListTile(
-                  leading: const Icon(Icons.mail_outline_rounded),
-                  title: const Text("Messages"),
+                  title: const Text("Theme"),
                   onTap: () {
-                    //TODO navigate to messages for person
+                    //TODO handle theme switchinng here
                   },
                 ),
-                const SizedBox(height: smallSpacing),
+                ListTile(
+                  title: const Text("Clear history"),
+                  onTap: () {
+                    //TODO handle history clearing here
+                  },
+                ),
+                ListTile(
+                  title: const Text("Legal"),
+                  onTap: () {
+                    //TODO show some legal notes here
+                  },
+                ),
                 const Divider(thickness: 3),
                 const SizedBox(height: smallSpacing),
                 ListTile(
                   leading: const ImageIcon(AssetImage(collectionIcon)),
-                  title: const Text("Collections"),
+                  title: const Text("Liked"),
                   onTap: () {
-                    //TODO navigate to collections(saved,wishlist,favorite)
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const CollectionsScreen(),
-                      ),
+                    HelperFunctions.gotoPage(
+                      context: context,
+                      page: const LikedProductsScreen(),
                     );
                   },
                 ),
@@ -88,22 +103,7 @@ class ProfileScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: smallSpacing),
-                const Divider(thickness: 3),
-                const SizedBox(height: smallSpacing),
-                ListTile(
-                  leading: const ImageIcon(AssetImage(customerServiceIcon)),
-                  title: const Text("Service center"),
-                  onTap: () {
-                    //TODO navigate to service center
-                  },
-                ),
-                ListTile(
-                  leading: const ImageIcon(AssetImage(feedbackIcon)),
-                  title: const Text("Feedback"),
-                  onTap: () {
-                    //TODO navigate to feedback page
-                  },
-                ),
+                SignoutButton(user: user)
               ],
             ),
           ),

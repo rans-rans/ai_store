@@ -7,14 +7,14 @@ import '../widgets/collection_following_list.dart';
 import '../widgets/collection_saved_list.dart';
 import '../widgets/collection_wishlist_list.dart';
 
-class CollectionsScreen extends StatefulWidget {
-  const CollectionsScreen({super.key});
+class LikedProductsScreen extends StatefulWidget {
+  const LikedProductsScreen({super.key});
 
   @override
-  State<CollectionsScreen> createState() => _CollectionsScreenState();
+  State<LikedProductsScreen> createState() => _LikedProductsScreenState();
 }
 
-class _CollectionsScreenState extends State<CollectionsScreen> {
+class _LikedProductsScreenState extends State<LikedProductsScreen> {
   final pageController = PageController();
 
   @override

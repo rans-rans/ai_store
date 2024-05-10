@@ -5,6 +5,7 @@ import 'package:flutter_paystack_max/flutter_paystack_max.dart';
 import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
 import '../../../../utils/helper_functions.dart';
+import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../../orders/domain/entities/express_order.dart';
@@ -22,6 +23,7 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final selectedLocation = ValueNotifier<String?>(null);
   Order? order;
+  late AuthUser user;
   List<String> dropLocations = ['Bomso', 'Ayeduase', 'Kotei', 'Boadi', 'Ahinsan'];
 
   Future displayPaymentStatus(bool success) async {
@@ -50,6 +52,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    user = context.read<AuthBloc>().user!;
   }
 
   @override
@@ -178,7 +186,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                       onPressed: () async {
                         try {
-                          final user = context.read<AuthBloc>().user;
                           if (selectedLocation.value == null) {
                             HelperFunctions.snackShow(
                                 context, "Please select a location");
@@ -188,7 +195,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             //the order id here doesn't count because ids are generated on  server
                             //this is just here as some form of placeholder
                             orderId: 1,
-                            userId: user!.userId,
+                            customerName: user.username,
+                            userId: user.userId,
                             deliveryLocation: selectedLocation.value!,
                             orderDate: DateTime.now(),
                             cart: cart,

@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../../../constants/numbers.dart';
 import '../../../../constants/strings.dart';
+import '../../../../utils/helper_functions.dart';
+import '../../../products/domain/entities/product_details.dart';
+import '../../../products/presentation/screens/product_detail_screen.dart';
 
 class SearchResultTile extends StatelessWidget {
+  final ProductDetails product;
   const SearchResultTile({
     super.key,
+    required this.product,
   });
 
   @override
@@ -13,7 +18,12 @@ class SearchResultTile extends StatelessWidget {
     final screenSize = MediaQuery.sizeOf(context);
     return InkWell(
       onTap: () {
-        //TODO navigate to item detail page
+        HelperFunctions.gotoPage(
+          context: context,
+          page: ProductDetailScreen(
+            productId: product.hashCode,
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -48,42 +58,40 @@ class SearchResultTile extends StatelessWidget {
               ],
             ),
             const SizedBox(width: smallSpacing),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: smallSpacing),
-                  //TODO  search item name here
+                  const SizedBox(height: smallSpacing),
                   Text(
-                    "Double door refrigerator with android OS",
+                    product.name,
                     maxLines: 2,
                     softWrap: true,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: mediumFontWeight,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  //TODO small description of item
                   Text(
-                    "very brand new - samsung",
-                    style: TextStyle(
+                    product.description,
+                    style: const TextStyle(
                       fontSize: smallFontSize,
                     ),
                   ),
-                  SizedBox(height: smallSpacing),
-                  //TODO item price comes here
+                  const SizedBox(height: smallSpacing),
                   Text(
-                    "GH₵ 4080.00",
-                    style: TextStyle(fontWeight: mediumFontWeight),
+                    HelperFunctions.formatToCurrency(product.price),
+                    style: const TextStyle(fontWeight: mediumFontWeight),
                   ),
-                  //TODO if item is on promotion
-                  Text(
-                    "GH₵ 4500.00 • 10% off",
-                    style: TextStyle(
-                      fontSize: smallFontSize,
-                      color: Colors.grey,
+                  if (product.discount > 0)
+                    Text(
+                      """${HelperFunctions.getDiscountAmount(product.price, product.discount)}"""
+                      """• ${product.discount}% off""",
+                      style: const TextStyle(
+                        fontSize: smallFontSize,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
