@@ -17,6 +17,9 @@ void main() async {
   runApp(MyApp(user));
 }
 
+//TODO  under the all categories page, make the ui  such that as  the
+//user scrolls, for each category, about  five products are listed
+
 Future<AuthUser?> getUserData() async {
   final prefs = await SharedPreferences.getInstance();
   final userData = prefs.getString('user');

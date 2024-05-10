@@ -72,16 +72,21 @@ class ExpressProductsDatasource implements ProductsDataSource {
     required int categoryId,
     required String token,
   }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/shop/fetch-category-products'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'content-type': 'application/json',
-      },
-      body: json.encode({'category_id': categoryId}),
-    );
-    final data = json.decode(response.body) as List<dynamic>;
-    return data;
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/shop/fetch-category-products'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'content-type': 'application/json',
+        },
+        body: json.encode({'category_id': categoryId}),
+      );
+      final data = json.decode(response.body) as List<dynamic>;
+      return data;
+    } catch (e) {
+      print("error  in  here  $e");
+      rethrow;
+    }
   }
 
   @override

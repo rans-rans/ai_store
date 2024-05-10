@@ -31,9 +31,10 @@ class _HomeControllerScreenState extends State<HomeControllerScreen> {
     context.read<ProductsBloc>().add(FetchProducts(token: user.authToken));
     context.read<CategoryBloc>().add(FetchAllCategories(user.authToken));
     context.read<BrandBloc>().add(FetchAllBrandsEvent(user.authToken));
-    context
-        .read<CartBloc>()
-        .add(GetUserCart(userId: user.userId, token: user.authToken));
+    context.read<CartBloc>().add(GetUserCart(
+          userId: user.userId,
+          token: user.authToken,
+        ));
   }
 
   @override

@@ -27,7 +27,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   Future<List<Product>> fetchProductsByCategory(
     int categoryId,
-    int userId,
     String token,
   ) async {
     try {
@@ -45,9 +44,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     on<FetchProducts>((event, emit) async {
       emit(ProductsLoading());
       try {
-        final products = await _productsRepository
-            .fetchProducts(event.token)
-            .timeout(const Duration(seconds: 7));
+        final products = await _productsRepository.fetchProducts(event.token);
         emit(ProductsSuccess(products: products));
       } catch (e) {
         emit(ProductsError());

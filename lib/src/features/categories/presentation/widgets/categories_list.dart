@@ -15,7 +15,7 @@ class CategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AuthBloc>().user;
+    final user = context.read<AuthBloc>().user!;
     final screenSize = MediaQuery.sizeOf(context);
     return SingleChildScrollView(
       primary: true,
@@ -57,7 +57,6 @@ class CategoriesList extends StatelessWidget {
           FutureBuilder(
             future: context.read<ProductsBloc>().fetchProductsByCategory(
                   categoryId,
-                  user!.userId,
                   user.authToken,
                 ),
             builder: (context, snapshot) {

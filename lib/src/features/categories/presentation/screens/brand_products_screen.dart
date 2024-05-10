@@ -17,14 +17,15 @@ class BrandProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
-    final user = context.read<AuthBloc>().state as AuthAvailable;
+    final user = context.read<AuthBloc>().user!;
     return Scaffold(
       appBar: AppBar(
         title: Text(brand.name),
       ),
       body: FutureBuilder(
-          future: context.read<ProductsBloc>().fetchProductsByBrand(
-              brand.id, user.authUser.userId, user.authUser.authToken),
+          future: context
+              .read<ProductsBloc>()
+              .fetchProductsByBrand(brand.id, user.userId, user.authToken),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

@@ -1,8 +1,8 @@
 abstract class CategoryDatasource {
-  Future<List<Map<String, dynamic>>> fetchAllBrands(
+  Future<List<dynamic>> fetchAllBrands(
     String token,
   );
-  Future<List<Map<String, dynamic>>> fetchAllCategories(
+  Future<List<dynamic>> fetchAllCategories(
     String token,
   );
 }

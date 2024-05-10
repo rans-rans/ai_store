@@ -62,10 +62,10 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen>
             return Center(
               child: ElevatedButton(
                 onPressed: () {
-                  final user = context.read<AuthBloc>().state as AuthAvailable;
+                  final user = context.read<AuthBloc>().user!;
                   context
                       .read<CategoryBloc>()
-                      .add(FetchAllCategories(user.authUser.authToken));
+                      .add(FetchAllCategories(user.authToken));
                 },
                 child: const Text("Reload"),
               ),

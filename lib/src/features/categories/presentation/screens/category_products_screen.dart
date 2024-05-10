@@ -24,7 +24,7 @@ class CategoryProductsScreen extends StatelessWidget {
       body: FutureBuilder(
           future: context
               .read<ProductsBloc>()
-              .fetchProductsByCategory(category.id, user.userId, user.authToken),
+              .fetchProductsByCategory(category.id, user.authToken),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -75,7 +75,7 @@ class CategoryProductsScreen extends StatelessWidget {
                   //   product.description,
                   //   maxLines: 3,
                   // ),
-                  isThreeLine: true,
+                  // isThreeLine: true,
                 );
               },
             );
