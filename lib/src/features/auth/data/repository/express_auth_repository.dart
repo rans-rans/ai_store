@@ -19,7 +19,7 @@ class ExpressAuthRepo implements AuthRepository {
     try {
       final request =
           await authDatasource.createUser(email: email, password: password);
-      final user = ExpressAuthUser.fromServer(request);
+      final user = ExpressAuthUser.fromMap(request);
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user', json.encode(user.toMap()));
@@ -41,7 +41,7 @@ class ExpressAuthRepo implements AuthRepository {
         password: password,
       );
       if (request['token'] == null) return null;
-      final user = ExpressAuthUser.fromServer(request);
+      final user = ExpressAuthUser.fromMap(request);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user', json.encode(user.toMap()));
 

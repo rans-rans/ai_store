@@ -159,6 +159,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text(formValid.msg)),
                               );
+                              return;
                             }
 
                             final email = emailController.text.trim();

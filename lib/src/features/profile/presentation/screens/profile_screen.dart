@@ -6,6 +6,7 @@ import '../../../../constants/strings.dart';
 import '../../../../utils/helper_functions.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
+import '../../../orders/presentation/screens/orders_screen.dart';
 import '../widgets/signout_button.dart';
 import 'collection_screen.dart';
 
@@ -92,7 +93,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: const ImageIcon(AssetImage(ordersIcon)),
                   title: const Text("Orders"),
                   onTap: () {
-                    //TODO navigate to orders
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const OrdersScreen()),
+                    );
                   },
                 ),
                 ListTile(

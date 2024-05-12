@@ -24,14 +24,13 @@ class ExpressAuthUser extends AuthUser {
     };
   }
 
-  factory ExpressAuthUser.fromServer(Map<String, dynamic> data) {
+  factory ExpressAuthUser.fromMap(Map<String, dynamic> data) {
     final userData = data['user'];
     final email = userData['email'] as String;
-    final username = userData['username'] as String?;
     return ExpressAuthUser(
-      username: username ?? email.split('@')[0],
+      username: userData['username'] ?? email.split('@')[0],
       userId: userData['id'],
-      email: email,
+      email: userData['email'],
       authToken: data['token'],
       password: userData['password'],
       phone: userData['phone'],

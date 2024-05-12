@@ -24,8 +24,9 @@ Future<AuthUser?> getUserData() async {
   final prefs = await SharedPreferences.getInstance();
   final userData = prefs.getString('user');
   if (userData == null) return null;
-  final user = json.decode(userData) as Map<String, dynamic>;
-  return ExpressAuthUser.fromServer(user);
+  final userMap = json.decode(userData) as Map<String, dynamic>;
+  final user = ExpressAuthUser.fromMap(userMap);
+  return user;
 }
 
 class MyApp extends StatelessWidget {
@@ -47,11 +48,12 @@ class MyApp extends StatelessWidget {
             }
             final isAuthenticated = (user != null || state is AuthAvailable);
             if (isAuthenticated) {
-              var authUser = user;
+              late AuthUser authUser;
               if (state is AuthAvailable) {
                 authUser = state.authUser;
               }
-              return HomeControllerScreen(user ?? authUser!);
+              context.read<AuthBloc>().setUser(user ?? authUser);
+              return HomeControllerScreen(user ?? authUser);
             }
             return const OnboardingScreen();
           },

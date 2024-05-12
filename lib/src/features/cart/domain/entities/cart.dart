@@ -36,9 +36,13 @@ abstract class CartItem {
   Map<String, dynamic> toServer() {
     return {
       'product_id': productId,
-      'user_id': userId,
       'quantity': quantity,
       'variant': itemVariation,
+      'price': productPrice,
+      'discount': discount,
+      'image_url': imageUrl,
+      'user_id': userId,
+      'name': productName,
     };
   }
 

@@ -11,6 +11,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthUser? user;
 
+  void setUser(AuthUser user) {
+    this.user = user;
+  }
+
   AuthBloc({
     required this.authRepository,
   }) : super(AuthUnAvailable()) {
@@ -27,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthActionFailed('invalid credentials'));
           return;
         }
+        this.user = user;
         emit(AuthAvailable(authUser: user));
       } catch (e) {
         emit(AuthActionFailed('unknown error.try again'));
@@ -38,11 +43,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: event.email,
           password: event.password,
         );
-        this.user = user;
         if (user == null) {
           emit(AuthActionFailed('invalid credentials'));
           return;
         }
+        this.user = user;
         emit(AuthAvailable(authUser: user));
       } catch (e) {
         emit(AuthActionFailed('unknown error.try again'));

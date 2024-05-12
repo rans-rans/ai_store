@@ -10,6 +10,7 @@ class Order {
   final Cart cart;
   final String customerName;
   final OrderStatus status;
+  final double totalCost;
 
   Order({
     required this.cart,
@@ -19,13 +20,14 @@ class Order {
     this.orderId = 0,
     this.status = OrderStatus.pending,
     required this.userId,
+    required this.totalCost,
   });
 
-  Map<String, dynamic> toMap(double cost) {
+  Map<String, dynamic> toMap() {
     return {
       'order_id': orderId,
-      'user_id': userId,
-      'total_cost': cost,
+      'id': userId,
+      'total_cost': totalCost,
       'customer_name': customerName,
       'order_date': orderDate.toIso8601String(),
       'delivery_location': deliveryLocation,

@@ -24,6 +24,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final selectedLocation = ValueNotifier<String?>(null);
   Order? order;
   late AuthUser user;
+  late double totalCost;
   List<String> dropLocations = ['Bomso', 'Ayeduase', 'Kotei', 'Boadi', 'Ahinsan'];
 
   Future displayPaymentStatus(bool success) async {
@@ -197,6 +198,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             deliveryLocation: selectedLocation.value!,
                             orderDate: DateTime.now(),
                             cart: cart,
+                            totalCost: totalCost,
                           );
                           final initializedResponse =
                               await context.read<CheckoutCubit>().initializePayment(
@@ -251,6 +253,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ConnectionState.waiting) {
                               return const Text("...");
                             }
+                            totalCost = snapshot.data!;
                             return RichText(
                               text: TextSpan(
                                 children: [

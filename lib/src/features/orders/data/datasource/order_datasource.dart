@@ -10,7 +10,14 @@ class OrderDatasource {
     required String token,
   }) async {
     try {
-      final request = await post(Uri.parse('/$baseUrl/shop/orders'));
+      final request = await post(
+        Uri.parse('$baseUrl/shop/fetch-user-orders'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'content-type': 'application/json'
+        },
+        body: json.encode({'id': userId}),
+      );
       final data = json.decode(request.body) as List<dynamic>;
       return data;
     } catch (e) {

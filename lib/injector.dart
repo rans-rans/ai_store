@@ -14,6 +14,9 @@ import 'src/features/categories/presentation/blocs/category/category_bloc.dart';
 import 'src/features/checkout/data/datasource/paystack_datasource.dart';
 import 'src/features/checkout/data/repository/express_checkout_repo.dart';
 import 'src/features/checkout/presentation/blocs/cubit/checkout_cubit.dart';
+import 'src/features/orders/data/datasource/order_datasource.dart';
+import 'src/features/orders/data/repository/express_order_repo.dart';
+import 'src/features/orders/presentation/blocs/order_bloc/orders_bloc.dart';
 import 'src/features/products/data/data_source/express_products_datasource.dart';
 import 'src/features/products/data/repository/express_products_repository.dart';
 import 'src/features/products/presentation/blocs/product/product_bloc.dart';
@@ -31,6 +34,7 @@ class Injector extends StatelessWidget {
     final cartDatasource = ExpressCartDatasource();
     final categoryDatasource = ExpressCategoryDatasource();
     final productsDatasource = ExpressProductsDatasource();
+    final orderDatasource = OrderDatasource();
     //repostitories
     final authRepository = ExpressAuthRepo(authDatasource: authDatasource);
     final expressProductsRepository =
@@ -40,6 +44,7 @@ class Injector extends StatelessWidget {
     final checkoutRepository = ExpressCheckoutRepo(
       paymentDatasource: PaystackDatasource(),
     );
+    final orderRepo = ExpressOrderRepo(orderDatasource: orderDatasource);
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthBloc(authRepository: authRepository)),
@@ -58,6 +63,9 @@ class Injector extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProductBloc(expressProductsRepository),
+        ),
+        BlocProvider(
+          create: (context) => OrdersBloc(orderRepo: orderRepo),
         ),
       ],
       child: child,
