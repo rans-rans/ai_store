@@ -42,8 +42,9 @@ class MyApp extends StatelessWidget {
         // themeMode: ThemeMode.dark,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
-            Navigator.popUntil(context, ModalRoute.withName('/'));
-
+            if (Navigator.canPop(context)) {
+              Navigator.popUntil(context, ModalRoute.withName('/'));
+            }
             final isAuthenticated = (user != null || state is AuthAvailable);
             if (isAuthenticated) {
               var authUser = user;

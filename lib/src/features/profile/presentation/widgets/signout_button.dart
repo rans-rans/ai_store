@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 
 class SignoutButton extends StatelessWidget {
   const SignoutButton({
     super.key,
-    required this.user,
   });
-
-  final AuthUser user;
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AuthBloc>().user;
     return Align(
       alignment: Alignment.center,
       child: InkWell(
@@ -31,8 +28,8 @@ class SignoutButton extends StatelessWidget {
                   onPressed: () {
                     context.read<AuthBloc>().add(
                           LogoutEvent(
-                            userId: user.userId,
-                            token: user.authToken,
+                            userId: user?.userId ?? 0,
+                            token: user?.authToken ?? '',
                           ),
                         );
                   },

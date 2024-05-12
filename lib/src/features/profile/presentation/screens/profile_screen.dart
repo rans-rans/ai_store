@@ -17,12 +17,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late AuthUser user;
+  late AuthUser? user;
 
   @override
   void initState() {
     super.initState();
-    user = context.read<AuthBloc>().user!;
+    user = context.read<AuthBloc>().user;
   }
 
   @override
@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Spacer(flex: 1),
                       Text(
-                        user.username,
+                        user?.username ?? '',
                         style: const TextStyle(
                           fontWeight: mediumFontWeight,
                           fontSize: mediumFontSize,
@@ -103,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                 ),
                 const SizedBox(height: smallSpacing),
-                SignoutButton(user: user)
+                const SignoutButton(),
               ],
             ),
           ),

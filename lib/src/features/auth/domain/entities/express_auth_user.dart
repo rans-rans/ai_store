@@ -19,21 +19,19 @@ class ExpressAuthUser extends AuthUser {
         'phone': phone,
         'password': password,
         'id': userId,
+        'username': username ?? email.split('@')[0],
       }
     };
   }
 
-  static String getUserName(String? username, String email) {
-    final emailName = email.split('@')[0];
-    return username ?? emailName;
-  }
-
   factory ExpressAuthUser.fromServer(Map<String, dynamic> data) {
     final userData = data['user'];
+    final email = userData['email'] as String;
+    final username = userData['username'] as String?;
     return ExpressAuthUser(
-      username: getUserName(data['username'], data['email']),
+      username: username ?? email.split('@')[0],
       userId: userData['id'],
-      email: userData['email'],
+      email: email,
       authToken: data['token'],
       password: userData['password'],
       phone: userData['phone'],

@@ -192,7 +192,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             return;
                           }
                           order = ExpressOrder(
-                            customerName: user.username,
+                            customerName: user.username ?? user.email.split('@')[0],
                             userId: user.userId,
                             deliveryLocation: selectedLocation.value!,
                             orderDate: DateTime.now(),

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:socket_io_client/socket_io_client.dart' as io;
+
+import '../../../../constants/api_constants.dart';
 import '../../../../constants/numbers.dart';
+import '../../../../utils/helper_functions.dart';
+import '../../../products/domain/entities/express_product.dart';
+import '../../../products/domain/entities/product.dart';
+import '../../../products/presentation/screens/product_detail_screen.dart';
 import 'open_camera_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -12,11 +19,43 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final searchController = TextEditingController();
+  final searchFocus = FocusNode();
+  final searchResults = ValueNotifier(<Product>[]);
+
+  late io.Socket socket;
+  final dataLoading = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    socket = io.io(
+        baseUrl,
+        io.OptionBuilder()
+            .enableAutoConnect()
+            .enableReconnection()
+            .setTransports(['websocket']).build());
+
+    socket.on('sr', (value) {
+      final results = (value as List<dynamic>).map(ExpressProduct.fromServer);
+      searchResults.value = results.toList();
+      dataLoading.value = false;
+    });
+
+    searchController.addListener(searchInputListener);
+  }
+
+  void searchInputListener() {
+    if (searchController.text.isEmpty) {
+      dataLoading.value = false;
+    }
+  }
 
   @override
   void dispose() {
     super.dispose();
+    searchController.removeListener(searchInputListener);
     searchController.dispose();
+    searchFocus.dispose();
   }
 
   @override
@@ -25,22 +64,40 @@ class _SearchScreenState extends State<SearchScreen> {
       appBar: AppBar(
         title: SizedBox(
           height: 40,
-          child: TextField(
-            controller: searchController,
-            cursorColor: Theme.of(context).primaryColor,
-            decoration: InputDecoration(
-              hintText: "Search in store",
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(inputBorderRadius),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(inputBorderRadius),
-              ),
-            ),
-            onChanged: (value) {
-              //TODO handle realtime search results here
-            },
-          ),
+          child: ValueListenableBuilder(
+              valueListenable: dataLoading,
+              builder: (context, loading, child) {
+                return TextField(
+                  controller: searchController,
+                  focusNode: searchFocus,
+                  cursorColor: Theme.of(context).primaryColor,
+                  decoration: InputDecoration(
+                    suffix: switch (loading) {
+                      false => null,
+                      true => const SizedBox(
+                          height: 10,
+                          width: 15,
+                          child: CircularProgressIndicator(),
+                        ),
+                    },
+                    hintText: "Search in store",
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(inputBorderRadius),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(inputBorderRadius),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      searchResults.value = [];
+                      return;
+                    }
+                    dataLoading.value = true;
+                    socket.emit('search', value);
+                  },
+                );
+              }),
         ),
         actions: [
           IconButton(
@@ -48,9 +105,7 @@ class _SearchScreenState extends State<SearchScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) {
-                    return const OpenCameraScreen();
-                  },
+                  builder: (_) => const OpenCameraScreen(),
                 ),
               );
             },
@@ -58,43 +113,31 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: () {},
-                child: const Text(
-                  "clear",
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                "Recents",
-                style: TextStyle(
-                  fontWeight: mediumFontWeight,
-                  fontSize: mediumFontSize,
-                ),
-              ),
-            ),
-            //TODO list of recent searches comes here
-            ListTile(
-              title: const Text("games"),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text("shoes"),
-              onTap: () {},
-            ),
-          ],
+      body: ValueListenableBuilder(
+        valueListenable: searchResults,
+        child: const Center(
+          child: Text('Search empty'),
         ),
+        builder: (context, products, child) {
+          if (products.isEmpty) return child!;
+          return ListView.builder(
+            itemCount: searchResults.value.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return ListTile(
+                title: Text(product.name),
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  searchFocus.unfocus();
+                  HelperFunctions.gotoPage(
+                    context: context,
+                    page: ProductDetailScreen(productId: product.productId),
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

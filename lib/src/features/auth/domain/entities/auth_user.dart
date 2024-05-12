@@ -3,7 +3,7 @@ abstract class AuthUser {
   final String email;
   final String password;
   final String? phone;
-  final String username;
+  final String? username;
   final int userId;
 
   AuthUser({
@@ -12,8 +12,13 @@ abstract class AuthUser {
     required this.email,
     required this.password,
     required this.phone,
-    required this.username,
+    this.username,
   });
 
   Map<String, dynamic> toMap();
+
+  @override
+  String toString() {
+    return 'AuthUser(authToken: $authToken, email: $email, password: $password, phone: $phone, username: $username, userId: $userId)';
+  }
 }
