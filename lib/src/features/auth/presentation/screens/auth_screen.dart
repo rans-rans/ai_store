@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/numbers.dart'
-    show boldestFontWeight, buttonBorderRadius, inputBorderRadius, largeFontSize;
-import '../../../../constants/strings.dart' show googleLogoImage;
+    show boldestFontWeight, inputBorderRadius, largeFontSize;
 import '../../../../widgets/wide_button_widget.dart' show WideButtonWidget;
 import '../blocs/auth_bloc/auth_bloc.dart';
 
@@ -32,8 +31,7 @@ class _AuthScreenState extends State<AuthScreen> {
       return (valid: false, msg: 'email invalid');
     }
     if (password.length < 6 == true) {
-      if (!isLogin.value &&
-          (password != passwordConfirm || passwordConfirm.length < 6)) {
+      if (!isLogin.value && (password != passwordConfirm || passwordConfirm.length < 6)) {
         return (valid: false, msg: 'passwords do not match');
       }
       return (valid: false, msg: 'password too weak');
@@ -109,8 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     decoration: InputDecoration(
                       hintText: "Password",
                       enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                         borderRadius: BorderRadius.circular(inputBorderRadius),
                       ),
                     ),
@@ -130,10 +127,8 @@ class _AuthScreenState extends State<AuthScreen> {
                             decoration: InputDecoration(
                               hintText: "Confirm Password",
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor),
-                                borderRadius:
-                                    BorderRadius.circular(inputBorderRadius),
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(inputBorderRadius),
                               ),
                             ),
                           ),
@@ -195,46 +190,6 @@ class _AuthScreenState extends State<AuthScreen> {
                         );
                       }),
                   onPressed: () => isLogin.value = !isLogin.value,
-                ),
-              ),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: size.width * 0.3,
-                    child: const Divider(
-                      thickness: 2,
-                    ),
-                  ),
-                  const Text("or"),
-                  SizedBox(
-                    width: size.width * 0.3,
-                    child: const Divider(
-                      thickness: 2,
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(buttonBorderRadius),
-                    side: BorderSide(
-                      width: 2,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Image.asset(googleLogoImage),
-                    const Spacer(),
-                    const Text("Continue with google"),
-                    const Spacer(),
-                  ],
                 ),
               ),
               const Spacer(

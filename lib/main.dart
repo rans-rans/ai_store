@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ai_store/src/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:ai_store/src/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,9 +9,7 @@ import 'injector.dart';
 import 'src/constants/colors.dart' show darkTheme, lightTheme;
 import 'src/features/auth/domain/entities/auth_user.dart';
 import 'src/features/auth/domain/entities/express_auth_user.dart';
-import 'src/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'src/features/home/presentation/screens/home_controller_screen.dart';
-import 'src/features/onboarding/presentation/onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
         darkTheme: darkTheme,
-        // themeMode: ThemeMode.dark,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (Navigator.canPop(context)) {

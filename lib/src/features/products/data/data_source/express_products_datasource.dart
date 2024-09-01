@@ -10,10 +10,7 @@ class ExpressProductsDatasource implements ProductsDataSource {
   Future<List<dynamic>> fetchGeneralProducts(String token) async {
     try {
       final request = await http.get(Uri.parse('$baseUrl/shop/fetch-products'),
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': 'Bearer $token'
-          });
+          headers: {'content-type': 'application/json', 'Authorization': 'Bearer $token'});
       final data = json.decode(request.body) as List<dynamic>;
       return data;
     } catch (e) {
@@ -41,27 +38,6 @@ class ExpressProductsDatasource implements ProductsDataSource {
       );
       final description = json.decode(request.body) as Map<String, dynamic>;
       return description;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<dynamic>> fetchProductsByBrand({
-    required int brandID,
-    required String token,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/shop/fetch-brand-products'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'content-type': 'application/json',
-        },
-        body: json.encode({'brand_id': brandID}),
-      );
-      final data = json.decode(response.body) as List<dynamic>;
-      return data;
     } catch (e) {
       rethrow;
     }

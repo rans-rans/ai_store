@@ -81,8 +81,7 @@ class _DescriptionBodyState extends State<DescriptionBody> {
                           builder: (_) {
                             return RatingSheet(productId: widget.product.productId);
                           },
-                          constraints:
-                              BoxConstraints(maxHeight: screenSize.height * 0.7),
+                          constraints: BoxConstraints(maxHeight: screenSize.height * 0.7),
                         ) as Rating?;
                         if (rating != null) {
                           ratings.value = [rating, ...ratings.value];
@@ -136,24 +135,6 @@ class _DescriptionBodyState extends State<DescriptionBody> {
                   ],
                 ),
                 const SizedBox(height: mediumSpacing),
-                Align(
-                  alignment: Alignment.center,
-                  child: DropdownMenu(
-                    label: const Text("Select variant"),
-                    width: MediaQuery.sizeOf(context).width * 0.8,
-                    onSelected: (value) {
-                      widget.selectedVariation.value = value;
-                    },
-                    dropdownMenuEntries: [
-                      ...widget.product.variants.map(
-                        (variant) => DropdownMenuEntry(
-                          value: variant,
-                          label: variant,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
                 const SizedBox(height: mediumSpacing * 2.5),
                 const Text(
                   "About this item",
@@ -178,16 +159,6 @@ class _DescriptionBodyState extends State<DescriptionBody> {
                       children: [
                         const Text("Quanntity status"),
                         Text("${widget.product.quantity}"),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        const Text("Brand"),
-                        Text(
-                          widget.product.brand,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
                       ],
                     ),
                   ],

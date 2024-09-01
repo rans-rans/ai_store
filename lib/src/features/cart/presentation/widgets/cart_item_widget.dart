@@ -42,13 +42,6 @@ class CartItemWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                cartItem.itemVariation,
-                maxLines: 1,
-                style: const TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
               Row(
                 children: [
                   IconButton(
@@ -88,8 +81,7 @@ class CartItemWidget extends StatelessWidget {
               ),
               //item price over here
               Text(
-                HelperFunctions.formatToCurrency(
-                    cartItem.productPrice * cartItem.quantity),
+                HelperFunctions.formatToCurrency(cartItem.productPrice * cartItem.quantity),
                 style: const TextStyle(
                   fontSize: mediumFontSize,
                   fontWeight: boldestFontWeight,

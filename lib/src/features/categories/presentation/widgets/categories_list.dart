@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/numbers.dart';
 import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../products/presentation/blocs/products/products_bloc.dart';
-import '../blocs/brand/brand_bloc.dart';
-import 'brand_chip.dart';
 import 'categories_just_for_you_widget.dart';
 import '../../../home/presentation/widgets/product_card_widget.dart';
 
@@ -24,36 +22,8 @@ class CategoriesList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: MediaQuery.paddingOf(context).top + 41),
-          const Text(
-            "Brands",
-            style: TextStyle(fontSize: mediumFontSize),
-          ),
-          const SizedBox(height: mediumSpacing * 2),
-          SizedBox(
-            height: screenSize.height * 0.2,
-            child: BlocBuilder<BrandBloc, BrandState>(
-              builder: (context, state) {
-                if (state is! BrandsFetchSuccess) {
-                  return const SizedBox.shrink();
-                }
-                return GridView.builder(
-                  itemCount: state.brands.length,
-                  scrollDirection: Axis.horizontal,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    mainAxisExtent: screenSize.width * 0.15,
-                    crossAxisSpacing: screenSize.height * 0.01,
-                  ),
-                  itemBuilder: (context, index) {
-                    final brand = state.brands[index];
-                    return BrandChip(brand: brand);
-                  },
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: mediumSpacing * 3),
+          // const SizedBox(height: mediumSpacing * 2),
+          // const SizedBox(height: mediumSpacing * 3),
           FutureBuilder(
             future: context.read<ProductsBloc>().fetchProductsByCategory(
                   categoryId,

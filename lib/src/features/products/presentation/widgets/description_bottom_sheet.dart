@@ -31,8 +31,7 @@ class DescriptionBottomSheet extends StatelessWidget {
       child: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
           //checking for product loading
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              snapshot.data == null) {
+          if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
             return const SizedBox.shrink();
           }
           //at the point, we check again if the product is in the cart
@@ -59,8 +58,8 @@ class DescriptionBottomSheet extends StatelessWidget {
           final itemExists = state is CartFetchSuccess &&
               state.cart.products.any((item) => item.productId == product.productId);
           if (itemExists) {
-            final cartProduct = state.cart.products
-                .firstWhere((item) => item.productId == product.productId);
+            final cartProduct =
+                state.cart.products.firstWhere((item) => item.productId == product.productId);
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -110,8 +109,8 @@ class DescriptionBottomSheet extends StatelessWidget {
                   //discount price comes here
                   Text(
                     switch (product.discount > 0) {
-                      true => HelperFunctions.getDiscountAmount(
-                          product.price, product.discount),
+                      true =>
+                        HelperFunctions.getDiscountAmount(product.price, product.discount),
                       false => HelperFunctions.formatToCurrency(product.price),
                     },
                     style: const TextStyle(
@@ -125,22 +124,21 @@ class DescriptionBottomSheet extends StatelessWidget {
               //ADD TO CART button
               ElevatedButton(
                 onPressed: () async {
-                  if (selectedVariation.value == null) {
-                    HelperFunctions.snackShow(context, "Please select item-variant");
-                    return;
-                  }
+                  // if (selectedVariation.value == null) {
+                  //   HelperFunctions.snackShow(context, "Please select item-variant");
+                  //   return;
+                  // }
 
                   context.read<CartBloc>().add(
                         AddProductToCartEvent(
                           cartItem: ExpressCartItem(
                               quantity: 1,
                               productId: product.productId,
-                              itemVariation: selectedVariation.value!,
                               userId: authUser.userId,
                               discount: product.discount,
                               productName: product.name,
                               productPrice: product.price,
-                              imageUrl: product.images.first),
+                              imageUrl: product.images),
                           token: authUser.authToken,
                         ),
                       );

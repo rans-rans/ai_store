@@ -8,7 +8,6 @@ class ExpressCartItem extends CartItem {
   ExpressCartItem({
     required super.quantity,
     required super.productId,
-    required super.itemVariation,
     required super.userId,
     required super.discount,
     required super.productName,
@@ -24,7 +23,6 @@ class ExpressCartItem extends CartItem {
         discount: double.parse(data['discount']),
         productId: data['id'],
         quantity: data['quantity'],
-        itemVariation: data['variant'],
         userId: data['user_id'],
         imageUrl: (data['images'] as List).first,
       );
@@ -38,7 +36,6 @@ class ExpressCartItem extends CartItem {
       {int? quantity,
       int? productId,
       int? userId,
-      String? itemVariation,
       double? discount,
       String? productName,
       double? productPrice,
@@ -46,7 +43,6 @@ class ExpressCartItem extends CartItem {
     return ExpressCartItem(
       quantity: quantity ?? this.quantity,
       productId: productId ?? this.productId,
-      itemVariation: itemVariation ?? this.itemVariation,
       userId: userId ?? this.userId,
       discount: discount ?? this.discount,
       productName: productName ?? this.productName,

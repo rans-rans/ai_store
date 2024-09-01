@@ -6,7 +6,6 @@ import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import '../../../cart/presentation/bloc/cart/cart_bloc.dart';
 import '../../../cart/presentation/screens/cart_screen.dart';
-import '../../../categories/presentation/blocs/brand/brand_bloc.dart';
 import '../../../categories/presentation/blocs/category/category_bloc.dart';
 import '../../../products/presentation/blocs/products/products_bloc.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
@@ -30,7 +29,6 @@ class _HomeControllerScreenState extends State<HomeControllerScreen> {
     context.read<AuthBloc>().add(FetchUser(user));
     context.read<ProductsBloc>().add(FetchProducts(token: user.authToken));
     context.read<CategoryBloc>().add(FetchAllCategories(user.authToken));
-    context.read<BrandBloc>().add(FetchAllBrandsEvent(user.authToken));
     context.read<CartBloc>().add(GetUserCart(
           userId: user.userId,
           token: user.authToken,

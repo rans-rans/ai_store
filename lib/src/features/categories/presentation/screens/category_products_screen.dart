@@ -55,9 +55,8 @@ class CategoryProductsScreen extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            decoration: product.discount > 0
-                                ? TextDecoration.lineThrough
-                                : null,
+                            decoration:
+                                product.discount > 0 ? TextDecoration.lineThrough : null,
                           )),
                       if (product.discount > 0)
                         Text(

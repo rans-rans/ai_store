@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class ImageCarousel extends StatelessWidget {
-  final List<dynamic> imagePaths;
+  final String imagePaths;
   const ImageCarousel({
     super.key,
     required this.imagePaths,
@@ -23,11 +23,7 @@ class ImageCarousel extends StatelessWidget {
             aspectRatio: 1,
           ),
           carouselController: CarouselController(),
-          items: [
-            ...imagePaths.map((image) {
-              return OnlineImage(image: image);
-            })
-          ],
+          items: [OnlineImage(image: imagePaths)],
         ),
       ],
     );

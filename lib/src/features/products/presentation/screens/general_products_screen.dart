@@ -130,10 +130,8 @@ class GeneralProductsScreen extends StatelessWidget {
                 BlocBuilder<ProductsBloc, ProductsState>(
                   builder: (context, state) {
                     return switch (state) {
-                      ProductsInitial() =>
-                        const Center(child: Text("Products Unavailable")),
-                      ProductsError() =>
-                        const Center(child: Text("Network unavailable")),
+                      ProductsInitial() => const Center(child: Text("Products Unavailable")),
+                      ProductsError() => const Center(child: Text("Network unavailable")),
                       ProductsLoading() => const Center(
                           child: CircularProgressIndicator.adaptive(),
                         ),
@@ -144,7 +142,7 @@ class GeneralProductsScreen extends StatelessWidget {
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: size.width * 0.05,
-                            mainAxisExtent: size.height * 0.25,
+                            mainAxisExtent: size.height * 0.3,
                             mainAxisSpacing: size.height * 0.05,
                           ),
                           itemBuilder: (context, index) {

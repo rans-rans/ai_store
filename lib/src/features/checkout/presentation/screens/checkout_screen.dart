@@ -118,8 +118,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         final cartItem = cart.products[index];
-                        return CheckoutItemWidget(
-                            cartItem: cartItem, screenSize: screenSize);
+                        return CheckoutItemWidget(cartItem: cartItem, screenSize: screenSize);
                       },
                     ),
                   ),
@@ -157,8 +156,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             initialData: 0.0,
                             future: HelperFunctions.getCartTotalPrice(cart.products),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
                                 return const Text("Calculating");
                               }
                               return Text(
@@ -188,8 +186,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       onPressed: () async {
                         try {
                           if (selectedLocation.value == null) {
-                            HelperFunctions.snackShow(
-                                context, "Please select a location");
+                            HelperFunctions.snackShow(context, "Please select a location");
                             return;
                           }
                           order = ExpressOrder(
@@ -206,30 +203,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     email: user.email,
                                   );
 
-                          if (mounted) {
+                          if (context.mounted) {
                             PaymentService.showPaymentModal(
                               context,
+                              callbackUrl: '',
                               transaction: PaystackInitializedTraction(
                                 status: initializedResponse['status'],
                                 message: initializedResponse['message'],
                                 data: PaystackInitializedTractionData(
                                   authorizationUrl: initializedResponse['data']
                                       ['authorization_url'],
-                                  accessCode: initializedResponse['data']
-                                      ['access_code'],
-                                  reference: initializedResponse['data']
-                                      ['reference'],
+                                  accessCode: initializedResponse['data']['access_code'],
+                                  reference: initializedResponse['data']['reference'],
                                 ),
                               ),
                             ).then((value) async {
-                              final transactionVerified = await context
-                                  .read<CheckoutCubit>()
-                                  .verifyTransaction(
-                                    key: secrectKey,
-                                    ref: initializedResponse['data']['reference'],
-                                  );
-                              displayPaymentStatus(transactionVerified)
-                                  .then((value) {
+                              final transactionVerified =
+                                  await context.read<CheckoutCubit>().verifyTransaction(
+                                        key: secrectKey,
+                                        ref: initializedResponse['data']['reference'],
+                                      );
+                              displayPaymentStatus(transactionVerified).then((value) {
                                 if (mounted) {
                                   Navigator.popUntil(
                                     context,
@@ -249,8 +243,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       child: FutureBuilder(
                           future: HelperFunctions.getCartTotalPrice(cart.products),
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Text("...");
                             }
                             totalCost = snapshot.data!;
@@ -261,8 +254,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     text: "Checkout for ",
                                   ),
                                   TextSpan(
-                                    text: HelperFunctions.formatToCurrency(
-                                        snapshot.requireData),
+                                    text:
+                                        HelperFunctions.formatToCurrency(snapshot.requireData),
                                     style: const TextStyle(
                                       fontWeight: boldestFontWeight,
                                     ),

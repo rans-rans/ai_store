@@ -48,17 +48,9 @@ class OrderDetailScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(
-                      item.itemVariation,
-                      maxLines: 1,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
                     //item price over here
                     Text(
-                      HelperFunctions.formatToCurrency(
-                          item.productPrice * item.quantity),
+                      HelperFunctions.formatToCurrency(item.productPrice * item.quantity),
                       style: const TextStyle(
                         fontSize: mediumFontSize,
                         fontWeight: boldestFontWeight,

@@ -9,7 +9,6 @@ import 'src/features/cart/data/repository/express_cart_repo.dart';
 import 'src/features/cart/presentation/bloc/cart/cart_bloc.dart';
 import 'src/features/categories/data/datasource/express_category_datasource.dart';
 import 'src/features/categories/data/repositories/express_category_repo.dart';
-import 'src/features/categories/presentation/blocs/brand/brand_bloc.dart';
 import 'src/features/categories/presentation/blocs/category/category_bloc.dart';
 import 'src/features/checkout/data/datasource/paystack_datasource.dart';
 import 'src/features/checkout/data/repository/express_checkout_repo.dart';
@@ -48,8 +47,6 @@ class Injector extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthBloc(authRepository: authRepository)),
-        BlocProvider(
-            create: (context) => BrandBloc(categoryRepository: expressCategoryRepo)),
         BlocProvider(create: (context) => CartBloc(expressCartRepo)),
         BlocProvider(create: (context) => CategoryBloc(expressCategoryRepo)),
         BlocProvider(

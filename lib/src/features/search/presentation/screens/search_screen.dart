@@ -63,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: SizedBox(
-          height: 40,
+          height: 55,
           child: ValueListenableBuilder(
               valueListenable: dataLoading,
               builder: (context, loading, child) {

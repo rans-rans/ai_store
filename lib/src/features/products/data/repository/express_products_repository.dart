@@ -41,23 +41,6 @@ class ExpressProductsRepository implements ProductsRepository {
   }
 
   @override
-  Future<List<Product>> fetchProductsByBrand({
-    required int brandId,
-    required String token,
-  }) async {
-    try {
-      final response = await datasource.fetchProductsByBrand(
-        brandID: brandId,
-        token: token,
-      );
-      final products = response.map(ExpressProduct.fromServer);
-      return products.toList();
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
   Future<List<Product>> fetchProductsByCategory({
     required int categoryId,
     required String token,
@@ -141,8 +124,7 @@ class ExpressProductsRepository implements ProductsRepository {
     required String token,
   }) async {
     try {
-      return await datasource.saveProduct(
-          userId: userId, productId: productId, token: token);
+      return await datasource.saveProduct(userId: userId, productId: productId, token: token);
     } catch (e) {
       rethrow;
     }

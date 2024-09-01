@@ -38,7 +38,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           'product_id': item.productId,
           'id': item.userId,
           'quantity': 1,
-          'variant': item.itemVariation,
         }, token: event.token);
         if (response['status'] == 'failed') {
           emit(CartFetchFailed(message: response['message']));
@@ -52,8 +51,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     on<ChangeItemQuantityEvent>((event, emit) async {
       try {
-        final productIndex = _cart.products
-            .indexWhere((element) => element.productId == event.productId);
+        final productIndex =
+            _cart.products.indexWhere((element) => element.productId == event.productId);
         await cartRepository.changeProductQuantity(
           productId: event.productId,
           userId: event.userId,

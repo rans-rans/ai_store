@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_paystack_max/flutter_paystack_max.dart';
+import 'package:http/http.dart';
 
 import '../../../../constants/api_constants.dart';
 import '../../../../utils/helper_functions.dart';
@@ -19,18 +20,26 @@ class PaystackDatasource implements PaymentDatasource {
       final reference =
           '${now.year}${now.month}${now.day}${now.day}${now.hour}${now.minute}${now.second}';
 
-      final request = PaystackTransactionRequest(
-        reference: reference,
-        secretKey: secrectKey,
-        email: email,
-        amount: (amount * 100).ceilToDouble(),
-        metadata: json.encode(order.toMap()),
-        currency: PaystackCurrency.ghs,
-        channel: [PaystackPaymentChannel.mobileMoney],
-      );
+      final url = Uri.parse('https://api.paystack.co/transaction/initialize');
 
-      final response = await PaymentService.initializeTransaction(request);
-      return response.toMap();
+      final res = await post(url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $secrectKey',
+          },
+          body: json.encode(
+            {
+              "email": email,
+              "amount": (amount * 100).ceilToDouble(),
+              "currency": "GHS",
+              "metadata": order.toMap(),
+              "channel": ["mobile_money"],
+              "reference": reference,
+            },
+          ));
+
+      // final response = await PaymentService.initializeTransaction(request);
+      return json.decode(res.body) as Map<String, dynamic>;
     } catch (e) {
       rethrow;
     }

@@ -21,7 +21,6 @@ class ExpressOrder extends Order {
         return ExpressCartItem(
           quantity: item['quantity'],
           productId: item['product_id'],
-          itemVariation: item['variant'],
           userId: item['user_id'],
           discount: (item['discount'] / 1.0),
           productName: item['name'],

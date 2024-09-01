@@ -14,7 +14,6 @@ abstract class CartItem {
   int quantity;
   final int productId;
   final int userId;
-  final String itemVariation;
 
   final double discount;
   final String productName;
@@ -26,7 +25,6 @@ abstract class CartItem {
     required this.quantity,
     required this.productId,
     required this.userId,
-    required this.itemVariation,
     required this.discount,
     required this.productName,
     required this.productPrice,
@@ -37,7 +35,6 @@ abstract class CartItem {
     return {
       'product_id': productId,
       'quantity': quantity,
-      'variant': itemVariation,
       'price': productPrice,
       'discount': discount,
       'image_url': imageUrl,
@@ -50,7 +47,6 @@ abstract class CartItem {
     int? quantity,
     int? productId,
     int? userId,
-    String? itemVariation,
     double? discount,
     String? productName,
     double? productPrice,
@@ -59,6 +55,6 @@ abstract class CartItem {
 
   @override
   String toString() {
-    return 'CartItem(quantity: $quantity, productId: $productId, userId: $userId, itemVariation: $itemVariation, discount: $discount, productName: $productName, productPrice: $productPrice, imageUrl: $imageUrl)';
+    return 'CartItem(quantity: $quantity, productId: $productId, userId: $userId, discount: $discount, productName: $productName, productPrice: $productPrice, imageUrl: $imageUrl)';
   }
 }

@@ -5,10 +5,6 @@ abstract class ProductsDataSource {
     required int userId,
     required String authToken,
   });
-  Future<List<dynamic>> fetchProductsByBrand({
-    required int brandID,
-    required String token,
-  });
   Future<List<dynamic>> fetchProductsBycategory({
     required int categoryId,
     required String token,

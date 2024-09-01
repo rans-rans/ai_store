@@ -32,7 +32,10 @@ class ProductCardWidget extends StatelessWidget {
             //product name comes here
             Text(
               product.name,
-              style: const TextStyle(fontSize: smallFontSize),
+              style: const TextStyle(
+                fontSize: mediumFontSize,
+                overflow: TextOverflow.ellipsis,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

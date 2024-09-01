@@ -3,7 +3,6 @@ import 'product_details.dart';
 class ExpressProductDetails extends ProductDetails {
   ExpressProductDetails(
       {required super.averageRating,
-      required super.brand,
       required super.category,
       required super.description,
       required super.discount,
@@ -12,8 +11,7 @@ class ExpressProductDetails extends ProductDetails {
       required super.name,
       required super.price,
       required super.productId,
-      required super.quantity,
-      required super.variants});
+      required super.quantity});
 
   factory ExpressProductDetails.fromServer(Map<String, dynamic> data) {
     late int rating;
@@ -26,16 +24,14 @@ class ExpressProductDetails extends ProductDetails {
     }
     return ExpressProductDetails(
       averageRating: rating.toDouble(),
-      brand: data['brand_name'],
       category: data['category_name'],
       description: data['description'],
       discount: double.parse(data['discount']),
-      images: [...data['images']],
+      images: data['images'],
       name: data['name'],
       price: double.parse(data['price']),
       productId: data['id'],
       quantity: data['quantity'],
-      variants: [...data['variants']],
       isFavorite: data['is_favorite'] == 1 ? true : false,
     );
   }

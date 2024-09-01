@@ -15,10 +15,7 @@ class ExpressCartDatasource implements CartDatasource {
       final request = await http.post(
         Uri.parse('$baseUrl/shop/add-to-cart'),
         body: json.encode(cartItem),
-        headers: {
-          'content-type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
+        headers: {'content-type': 'application/json', 'Authorization': 'Bearer $token'},
       );
       final response = json.decode(request.body);
       return response;
@@ -85,10 +82,7 @@ class ExpressCartDatasource implements CartDatasource {
     try {
       final request = await http.post(
         Uri.parse('$baseUrl/shop/remove-from-cart'),
-        headers: {
-          'content-type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
+        headers: {'content-type': 'application/json', 'Authorization': 'Bearer $token'},
         body: json.encode({
           'id': userId,
           'product_id': productId,

@@ -13,10 +13,6 @@ abstract class ProductsRepository {
     required int categoryId,
     required String token,
   });
-  Future<List<Product>> fetchProductsByBrand({
-    required int brandId,
-    required String token,
-  });
   Future<List<Rating>> fetchProductRatings({
     required String token,
     required int productId,

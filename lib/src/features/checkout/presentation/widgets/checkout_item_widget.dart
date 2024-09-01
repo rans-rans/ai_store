@@ -39,13 +39,6 @@ class CheckoutItemWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              cartItem.itemVariation,
-              maxLines: 1,
-              style: const TextStyle(
-                color: Colors.grey,
-              ),
-            ),
             RichText(
               text: TextSpan(
                 style: const TextStyle(color: Colors.black),

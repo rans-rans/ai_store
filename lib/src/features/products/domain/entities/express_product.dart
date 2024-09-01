@@ -2,7 +2,6 @@ import 'product.dart';
 
 class ExpressProduct extends Product {
   ExpressProduct({
-    required super.brandId,
     required super.categoryId,
     required super.discount,
     required super.image,
@@ -24,11 +23,10 @@ class ExpressProduct extends Product {
     }
     try {
       return ExpressProduct(
-        brandId: data['brand_id'],
         productId: data['id'],
         categoryId: data['category_id'],
         discount: double.parse(data['discount']),
-        image: data['image'],
+        image: data['images'],
         name: data['name'],
         ratingScore: rating,
         price: double.parse(data['price']),
@@ -51,7 +49,6 @@ class ExpressProduct extends Product {
       int? quantity,
       double? discount}) {
     return ExpressProduct(
-      brandId: brandId ?? this.brandId,
       categoryId: categoryId ?? this.categoryId,
       discount: discount ?? this.discount,
       image: image ?? this.image,

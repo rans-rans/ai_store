@@ -1,6 +1,5 @@
 abstract class Product {
   final int ratingScore;
-  final int brandId;
   final int quantity;
   final int categoryId;
   final String image;
@@ -9,7 +8,6 @@ abstract class Product {
   final double price;
   final double discount;
   Product({
-    required this.brandId,
     required this.categoryId,
     required this.discount,
     required this.image,
@@ -34,7 +32,7 @@ abstract class Product {
 
   @override
   String toString() {
-    return """Product(averageScore: $ratingScore, brandId: $brandId, 
+    return """Product(averageScore: $ratingScore,
     categoryId: $categoryId, image: $image, name: $name, productId: $productId, 
     price: $price, discount: $discount, quantity: $quantity)""";
   }
@@ -42,7 +40,6 @@ abstract class Product {
   Map<String, dynamic> toMap() {
     return {
       'average_score': ratingScore,
-      'brand_id': brandId,
       'category_id': categoryId,
       'image': image,
       'name': name,
@@ -58,7 +55,6 @@ abstract class Product {
 
     return other is Product &&
         other.ratingScore == ratingScore &&
-        other.brandId == brandId &&
         other.categoryId == categoryId &&
         other.image == image &&
         other.name == name &&
@@ -70,7 +66,6 @@ abstract class Product {
   @override
   int get hashCode {
     return ratingScore.hashCode ^
-        brandId.hashCode ^
         categoryId.hashCode ^
         image.hashCode ^
         name.hashCode ^
